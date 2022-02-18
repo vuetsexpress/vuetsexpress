@@ -22,6 +22,15 @@ export function setSyslog(syslogFunc: any) {
 export function parseGitConfig(): any {
   const parsed = gitConfigParser.sync();
 
+  if (!parsed) {
+    return {
+      parsed: {},
+      originUrl: undefined,
+      repo: undefined,
+      originGitUserName: undefined,
+    };
+  }
+
   const remoteOrigin = parsed[`remote "origin"`];
 
   if (remoteOrigin) {
