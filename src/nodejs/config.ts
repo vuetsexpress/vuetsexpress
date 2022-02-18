@@ -1,15 +1,19 @@
 import { DAY, WEEK, SECOND, MINUTE, HOUR, TimeQuota } from "../shared/time";
-import { DEFAULT_LOGIN_INTERVAL } from "../shared/config";
+import {
+  DEFAULT_LOGIN_INTERVAL,
+  DEFAULT_REPO_NAME,
+  DEFAULT_APP_DISPLAY_NAME,
+} from "../shared/config";
 import currentGitBranch from "current-git-branch";
 import { readJson } from "./utils";
-import { DEFAULT_REPO_NAME, DEFAULT_APP_DISPLAY_NAME } from "../shared/config";
 import { parseGitConfig } from "./utils";
 
 /////////////////////////////////////////////////////////////////////
 
 export const PACKAGE_JSON = readJson("package.json", { scripts: {} });
 
-export const GIT_REPO_NAME = parseGitConfig().repo || DEFAULT_REPO_NAME;
+export const GIT_REPO_NAME =
+  PACKAGE_JSON.repoName || parseGitConfig().repo || DEFAULT_REPO_NAME;
 export const DEFAULT_DATABASE_NAME = GIT_REPO_NAME || DEFAULT_REPO_NAME;
 export const DATABASE_NAME = PACKAGE_JSON.databaseName || DEFAULT_DATABASE_NAME;
 export const APP_DISPLAY_NAME =

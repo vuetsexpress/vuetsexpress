@@ -2,7 +2,7 @@ import { GitHubAccountManager } from "./github";
 import { HerokuAppManager, APP_CONF } from "./heroku";
 import { randUserName } from "../shared/randusername";
 import { DEFAULT_REPO_NAME, gitUrl, SCRIPT_LINEFEED } from "../shared/config";
-import { FORK_ALL_DELAY, CURRENT_GIT_BRANCH } from "./config";
+import { FORK_ALL_DELAY, CURRENT_GIT_BRANCH, GIT_REPO_NAME } from "./config";
 
 import fs from "fs";
 
@@ -146,7 +146,7 @@ function _exportpush(argv: any) {
           PACKAGE_JSON.forks[provider].map((fork: string) => {
             const tokenName = `${fork.toUpperCase()}_${provider.toUpperCase()}_TOKEN_FULL`;
             const password = CRYPTENV[tokenName];
-            const pushUrl = gitUrl(fork, DEFAULT_REPO_NAME, provider, password);
+            const pushUrl = gitUrl(fork, GIT_REPO_NAME, provider, password);
             return `git push "${pushUrl}" ${CURRENT_GIT_BRANCH}${
               process.env.FORCE_PUSH ? " --force" : ""
             }`;
