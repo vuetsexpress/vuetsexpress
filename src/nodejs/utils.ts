@@ -20,16 +20,14 @@ export function setSyslog(syslogFunc: any) {
 /////////////////////////////////////////////////////////////////
 
 export function parseGitConfig(): any {
-  const parsed = gitConfigParser.sync();
+  const parsed = gitConfigParser.sync() || {};
 
-  if (!parsed) {
-    return {
-      parsed: {},
-      originUrl: undefined,
-      repo: undefined,
-      originGitUserName: undefined,
-    };
-  }
+  const nullResult = {
+    parsed,
+    originUrl: undefined,
+    repo: undefined,
+    originGitUserName: undefined,
+  };
 
   const remoteOrigin = parsed[`remote "origin"`];
 
@@ -41,7 +39,11 @@ export function parseGitConfig(): any {
       if (m) {
         parsed.originGitUserName = m[1];
       }
+    } else {
+      return nullResult;
     }
+  } else {
+    return nullResult;
   }
 
   const originUrl = parsed.originUrl;
