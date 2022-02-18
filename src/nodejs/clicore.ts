@@ -2,7 +2,7 @@ import { GitHubAccountManager } from "./github";
 import { HerokuAppManager, APP_CONF } from "./heroku";
 import { randUserName } from "../shared/randusername";
 import { DEFAULT_REPO_NAME, gitUrl, SCRIPT_LINEFEED } from "../shared/config";
-import { FORK_ALL_DELAY } from "./config";
+import { FORK_ALL_DELAY, CURRENT_GIT_BRANCH } from "./config";
 
 import fs from "fs";
 
@@ -155,6 +155,14 @@ export class Command {
 
 function _exportpush(argv: any) {
   return new Promise((resolve) => {
+    if (!CURRENT_GIT_BRANCH) {
+      const stdout = `echo "no current branch to push to${SCRIPT_LINEFEED}exit 1${SCRIPT_LINEFEED}"`;
+
+      resolve({ stdout });
+
+      return;
+    }
+
     const providers = Object.keys(PACKAGE_JSON.forks);
     const stdout =
       providers
@@ -163,7 +171,7 @@ function _exportpush(argv: any) {
             const tokenName = `${fork.toUpperCase()}_${provider.toUpperCase()}_TOKEN_FULL`;
             const password = CRYPTENV[tokenName];
             const pushUrl = gitUrl(fork, DEFAULT_REPO_NAME, provider, password);
-            return `git push "${pushUrl}" main${
+            return `git push "${pushUrl}" ${CURRENT_GIT_BRANCH}${
               process.env.FORCE_PUSH ? " --force" : ""
             }`;
           })
