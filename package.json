@@ -1,0 +1,109 @@
+{
+  "name": "vuetsexpress",
+  "version": "1.0.0",
+  "description": "A powerful web application framework using a Vue 3 Composition API client and an Express server, all written in Typescript and bundled using Rollup.js. The repo is configured as a GitPod Workspace to facilitate portable and straighforward development. The app can be deployed to Heroku from a GitHub uploaded tarball using its CLI. Implements a chess playing interface.",
+  "keywords": [
+    "Vue3",
+    "Composition",
+    "API",
+    "Express",
+    "Rollup.js",
+    "Heroku",
+    "GitHub",
+    "GitPod",
+    "CLI",
+    "chess",
+    "playing",
+    "interface"
+  ],
+  "contributors": [
+    "vuetsexpress <vuetsexpress@gmail.com>",
+    "vuetsexpressalt <vuetsexpress@googlemail.com>",
+    "pythonideas <rustbotchessapp@gmail.com>",
+    "pythonideasalt <rustbotchessapp@googlemail.com>",
+    "hyperchessbot <hyperchessbot@googlemail.com>",
+    "hyperchessbotalt <hyperchessbot@googlemail.com>",
+    "hyperbotauthor <hyperchessbotauthor@googlemail.com>",
+    "hyperbotauthoralt <hyperchessbotauthor@googlemail.com>",
+    "browsercaptures <browsercaptures@googlemail.com>",
+    "browsercapturesalt <browsercaptures@googlemail.com>"
+  ],
+  "forks": {
+    "github": [
+      "vuetsexpress",
+      "vuetsexpressalt",
+      "pythonideas",
+      "pythonideasalt",
+      "hyperchessbot",
+      "hyperchessbotalt",
+      "hyperbotauthor",
+      "hyperbotauthoralt",
+      "browsercaptures",
+      "browsercapturesalt"
+    ],
+    "gitlab": [
+      "vuetsexpress"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vuetsexpress/vuetsexpress"
+  },
+  "homepage": "https://github.com/vuetsexpress/vuetsexpress#readme",
+  "devDependencies": {
+    "@bity/oauth2-auth-code-pkce": "^2.13.0",
+    "@rollup/plugin-json": "^4.1.0",
+    "@rollup/plugin-node-resolve": "^13.1.3",
+    "@types/express": "^4.17.13",
+    "@types/lodash": "^4.14.178",
+    "@types/parse-git-config": "^3.0.1",
+    "nodemon": "^2.0.15",
+    "prettier": "^2.5.1",
+    "rollup": "^2.66.1",
+    "rollup-plugin-commonjs": "^10.1.0",
+    "rollup-plugin-terser": "^7.0.2",
+    "rollup-plugin-typescript2": "^0.31.1",
+    "sass": "^1.49.0",
+    "typescript": "^4.5.5"
+  },
+  "scripts": {
+    "bcs": "yarn buildclient && yarn buildserver",
+    "pretty": "prettier -w src buildtargets views .vscode package.json appconf.json",
+    "buildcli": "rollup --config buildtargets/rollup.config.cli.js",
+    "watchbuildcli": "rollup --watch --config buildtargets/rollup.config.cli.js",
+    "cli": "node dist/cli.js",
+    "bcli": "yarn buildcli && yarn cli",
+    "buildclient": "rollup --config buildtargets/rollup.config.client.js",
+    "buildclientprod": "rollup --config buildtargets/rollup.config.client.prod.js",
+    "watchbuildclient": "rollup --watch --config buildtargets/rollup.config.client.js",
+    "buildserver": "rollup --config buildtargets/rollup.config.server.js",
+    "watchbuildserver": "rollup --watch --config buildtargets/rollup.config.server.js",
+    "buildstyle": "sass src/style/scss/style.scss dist/style.css",
+    "watchbuildstyle": "sass --watch src/style/scss/style.scss dist/style.css",
+    "build": "yarn buildstyle && yarn buildclientprod && yarn buildserver && yarn buildcli",
+    "bserve": "yarn build && s/startserver.dev",
+    "bcsserve": "yarn bcs && s/startserver.dev",
+    "serve": "nodemon --watch dist/style.css --watch dist/server.js --watch dist/client.js --exec s/startserver.dev",
+    "scripts": "yarn cli scripts",
+    "addscript": "yarn cli addscript",
+    "delscript": "yarn cli delscript",
+    "bts": "yarn bcs && yarn buildcli",
+    "prettybuild": "yarn pretty && yarn build"
+  },
+  "dependencies": {
+    "@publishvue/chessground": "^8.1.7-maple",
+    "@publishvue/chessopsnpmts": "^1.0.22",
+    "@types/current-git-branch": "^1.1.2",
+    "current-git-branch": "^1.1.0",
+    "express": "^4.17.2",
+    "lodash": "^4.17.21",
+    "minimist": "^1.2.5",
+    "mongodb": "^4.3.1",
+    "mongodb-client-encryption": "^1.2.7",
+    "node-fetch": "^3.2.0",
+    "octokit": "^1.7.1",
+    "parse-git-config": "^3.0.0",
+    "spawn-sync": "^2.0.0",
+    "vue": "^3.2.29"
+  }
+}

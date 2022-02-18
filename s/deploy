@@ -1,0 +1,11 @@
+set -e
+
+. s/env
+
+s/archive
+
+yarn cli delapp
+
+yarn cli migrate
+
+#yarn cli deploy

@@ -1,0 +1,9 @@
+set -e
+
+cp .git/config config
+
+node dist/cli.js exportpush
+. clistdout
+rm clistdout
+
+cp config .git/config

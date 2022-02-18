@@ -1,0 +1,827 @@
+<style>
+  .commits {
+    border-collapse: collapse;
+    font-family: monospace;
+    font-size: 20px;
+  }
+  .commits td {
+    border: solid 1px #777;
+    padding: 3px;
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+  .accounts {
+    border-collapse: collapse;
+    font-family: monospace;
+    font-size: 20px;
+  }
+  .accounts td {
+    border: solid 1px #777;
+    padding: 3px;
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+  .builds {
+    border-collapse: collapse;
+    font-family: monospace;
+    font-size: 20px;
+  }
+  .builds td {
+    border: solid 1px #777;
+    padding: 3px;
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+  .config {
+    border-collapse: collapse;
+    font-family: monospace;
+    font-size: 20px;
+  }
+  .config td {
+    border: solid 1px #777;
+    padding: 3px;
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+</style>
+
+<script src="/vue.js"></script>
+<script src="/utils.js"></script>
+
+<div id="app">
+  <div v-if="(!params.appName) && (!params.commits)">
+    {{ welcome }}
+    <hr />
+    <button @click="setadminpass">Set Admin Pass</button>
+    <hr />
+    <button @click="addapp" style="background-color: #afa">Add App</button>
+    <select v-model="selApp" style="margin-left: 10px; font-family: monospace">
+      <option
+        v-for="ad in appData"
+        :value="ad.name"
+        selected="ad.name === selApp"
+      >
+        {{ ad.name }}
+      </option>
+      <option v-for="ad in appData" :value="`${ad.name}temp`">
+        {{ ad.name }}temp
+      </option>
+    </select>
+    <select v-model="selAcc" style="margin-left: 10px; font-family: monospace">
+      <option value="none">Select Heroku Account</option>
+      <option
+        v-for="acc in appMan.accounts"
+        :value="acc.name"
+        selected="acc.name === selAcc"
+      >
+        {{ acc.name }}
+      </option>
+    </select>
+    <button @click="deploy()" style="margin-left: 10px; background-color: #ffa">
+      Deploy App
+    </button>
+    <input
+      style="margin-left: 10px; width: 700px; font-family: monospace"
+      type="text"
+      :value="selAppTargzUrl"
+    />
+    <hr />
+
+    <table class="accounts" :key="appManAccountsKey">
+      <tr v-for="account in appMan.accounts">
+        <td style="font-weight: bold; color: #700; text-align: center">
+          {{ account.name }}
+        </td>
+        <td style="font-weight: bold; color: #070; text-align: center">
+          {{ Math.round((account.quotaTotal - account.quotaUsed)/3600) }}
+        </td>
+        <td>
+          <table>
+            <tr v-for="app in account.apps">
+              <td
+                style="
+                  font-weight: bold;
+                  color: #007;
+                  min-width: 200px;
+                  font-size: 18px;
+                "
+              >
+                <a
+                  rel="noopener noreferrer"
+                  target="_blank"
+                  :href="`https://${app.name}.herokuapp.com`"
+                  >{{ app.name }}
+                </a>
+              </td>
+              <td
+                style="
+                  font-weight: bold;
+                  color: #700;
+                  min-width: 30px;
+                  text-align: center;
+                  font-size: 18px;
+                "
+              >
+                {{ Math.round(app.quotaUsed/3600) }}
+              </td>
+              <td
+                style="
+                  font-weight: bold;
+                  color: #770;
+                  min-width: 30px;
+                  text-align: center;
+                "
+              >
+                {{ app.region }}
+              </td>
+              <td style="">
+                <button
+                  style="background-color: #ffa; margin-left: 10px"
+                  @click="getconfig(app)"
+                >
+                  Config
+                </button>
+                <button
+                  style="background-color: #afa; margin-left: 10px"
+                  @click="getlogs(app)"
+                >
+                  Logs
+                </button>
+                <button
+                  style="background-color: #aff; margin-left: 10px"
+                  @click="getbuilds(app)"
+                >
+                  Builds
+                </button>
+                <button
+                  style="background-color: #ace; margin-left: 10px"
+                  @click="showinfo(app)"
+                >
+                  Info
+                </button>
+                <select
+                  @change="setstack($event, app)"
+                  @click="setstacksame($event, app)"
+                  style="margin-left: 10px"
+                >
+                  <option
+                    :selected="stack === app.stack"
+                    :value="stack"
+                    v-for="stack in HEROKU_STACKS"
+                  >
+                    {{ stack }}
+                  </option>
+                </select>
+                <button
+                  style="background-color: #faf; margin-left: 10px"
+                  @click="restartalldynos(app)"
+                >
+                  Restart
+                </button>
+                <button
+                  style="background-color: #faa; margin-left: 10px"
+                  @click="deleteapp(app)"
+                >
+                  Delete
+                </button>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+    <hr />
+    <input
+      v-model="filterrepo"
+      placeholder="Filter by Repo Name"
+      style="font-family: monospace; font-size: 16px"
+    />
+    <select
+      v-model="sortReposBy"
+      style="
+        font-family: monospace;
+        margin-left: 10px;
+        font-size: 16px;
+        padding: 3px;
+      "
+    >
+      <option
+        v-for="sortCriteria in sortReposByCriteria"
+        :value="sortCriteria.value"
+      >
+        {{ sortCriteria.display }}
+      </option>
+    </select>
+    <hr />
+    <table class="accounts">
+      <tr v-for="account in gitMan.accounts">
+        <td style="font-weight: bold; color: #700; text-align: center">
+          <a rel="noopener noreferrer" target="_blank" :href="account.gitUrl">
+            {{ account.gitUserName }}
+          </a>
+        </td>
+        <td>
+          <button
+            @click="createrepo(account.gitUserName, false)"
+            style="background-color: #afa"
+          >
+            Create Empty Repo
+          </button>
+          <button
+            @click="createrepo(account.gitUserName, true)"
+            style="margin-left: 10px; background-color: #ffa"
+          >
+            Create Initialized Repo
+          </button>
+          <hr />
+          <div style="max-height: 300px; overflow-y: scroll">
+            <table>
+              <tr
+                v-for="(repo, index) in account.repos.filter(repo => repo.name.match(new RegExp(filterrepo))).sort(sortReposFunc)"
+              >
+                <td>{{ index + 1 }}</td>
+                <td>
+                  <a
+                    rel="noopener noreferrer"
+                    target="_blank"
+                    :href="repo.repoUrl"
+                  >
+                    {{ repo.name }}
+                  </a>
+                </td>
+                <td style="text-align: center; color: #070; font-weight: bold">
+                  {{ repo.stars ? `* ${repo.stars}` : "" }}
+                </td>
+                <td style="text-align: center; color: #707; font-weight: bold">
+                  {{ repo.forks ? `-> ${repo.forks}` : "" }}
+                </td>
+                <td style="color: #770">> {{ repo.pushedAt }}</td>
+                <td>
+                  <select @change="forkat($event, account, repo)">
+                    <option value="">Fork At</option>
+                    <option
+                      v-for="account in gitMan.accounts"
+                      :value="account.gitUserName"
+                    >
+                      {{ account.gitUserName }}
+                    </option>
+                  </select>
+                </td>
+                <td>
+                  <button
+                    @click="commits(account.gitUserName, repo)"
+                    style="background-color: #afa"
+                  >
+                    Commits
+                  </button>
+                </td>
+                <td>
+                  <button
+                    @click="deleterepo(account.gitUserName, repo)"
+                    style="background-color: #faa"
+                  >
+                    Del
+                  </button>
+                </td>
+              </tr>
+            </table>
+          </div>
+        </td>
+      </tr>
+    </table>
+  </div>
+  <div v-if="params.commits">
+    <span style="font-family: monospace">
+      Commits of
+      <span style="color: #070; font-weight: bold; font-size: 20px"
+        >{{ params.gitUserName }} / {{ params.repo }}</span
+      >
+    </span>
+    <hr />
+    <div style="font-family: monospace; font-size: 18px">
+      Total
+      <span style="color: #007; font-weight: bold"
+        >{{ params.commits.length }}</span
+      >
+      Max
+      <span style="color: #700; font-weight: bold"
+        >{{ params.maxCommitsPerDay }}</span
+      >
+      Avg
+      <span style="color: #070; font-weight: bold"
+        >{{ Math.round(params.avgCommitsPerDay) }}</span
+      >
+    </div>
+    <hr />
+    <svg
+      :height="params.maxCommitsPerDay * params.scale"
+      :width="params.commitsPerDayArray * params.scale"
+    >
+      <rect
+        v-for="(num, i) in params.commitsPerDayArray"
+        :x="i * params.scale"
+        :y="params.maxCommitsPerDay * params.scale -  params.scale * num"
+        :width="params.scale"
+        :height="params.scale * num"
+        fill="#070"
+      ></rect>
+    </svg>
+    <hr />
+    <table class="commits">
+      <tr v-for="(num, day) in params.commitsPerDay">
+        <td style="color: #707">{{ day }}</td>
+        <td style="color: #070; font-weight: bold">{{ num }}</td>
+        <td style="color: #077; font-size: 12px">
+          {{ params.commitMessagesPerDay[day].join(" , ") }}
+        </td>
+      </tr>
+    </table>
+    <hr />
+    <table class="commits">
+      <tr v-for="(commit, index) in params.commits">
+        <td style="color: #707">{{ index + 1 }}</td>
+        <td style="color: #700">{{ commit.commit.committer.date }}</td>
+        <td style="color: #070; font-weight: bold">
+          {{ commit.commit.committer.name }}
+        </td>
+        <td style="color: #007">{{ commit.commit.message }}</td>
+      </tr>
+    </table>
+  </div>
+  <div v-if="params.config">
+    <span style="font-family: monospace">
+      Config of
+      <span style="color: #070; font-weight: bold; font-size: 20px"
+        >{{ params.appName }}</span
+      >
+    </span>
+    <hr />
+    <button style="background-color: #afa" @click="addkey">Add Key</button>
+    <button
+      style="background-color: #ffa; margin-left: 10px"
+      @click="uploadconfig"
+    >
+      Upload Config
+    </button>
+    <hr />
+    <table class="config">
+      <tr
+        v-for="key in Object.keys(params.config).sort((a,b)=>a.localeCompare(b))"
+      >
+        <td style="color: #007">{{ key }}</td>
+        <td>
+          <button style="background-color: #afa" @click="editkey(key)">
+            Edit
+          </button>
+        </td>
+        <td style="max-width: 600px; overflow: hidden">
+          {{params.config[key]}}
+        </td>
+        <td>
+          <button style="background-color: #afa" @click="editvalue(key)">
+            Edit
+          </button>
+        </td>
+        <td>
+          <button style="background-color: #faa" @click="delkey(key)">
+            Del
+          </button>
+        </td>
+      </tr>
+    </table>
+  </div>
+  <div v-if="params.builds">
+    <span style="font-family: monospace">
+      Builds of
+      <span style="color: #070; font-weight: bold; font-size: 20px"
+        >{{ params.appName }}</span
+      >
+    </span>
+    <hr />
+    <table class="builds">
+      <tr v-for="build in params.builds.slice().reverse()">
+        <td style="color: #007">{{ build.id }}</td>
+        <td>{{build.created_at}}</td>
+        <td
+          :style="`font-weight:bold;${build.status === 'succeeded'?'color:#070;':'color:#700;'}`"
+        >
+          {{ build.status }}
+        </td>
+        <td>
+          <a
+            rel="noopener noreferrer"
+            target="_blank"
+            :href="build.output_stream_url"
+            >Logs</a
+          >
+        </td>
+        <td>
+          <button
+            @click="cancelbuild(params.appName, build.id)"
+            style="background-color: #faa"
+          >
+            Cancel
+          </button>
+        </td>
+      </tr>
+    </table>
+  </div>
+</div>
+
+<script>
+  document.title = "Manager";
+  Vue.createApp({
+    computed: {
+      selAppTargzUrl: function () {
+        return this.getSelAppTargzUrl();
+      },
+    },
+    methods: {
+      allMan() {
+        return new Promise((resolve) => {
+          post("allman", {}).then((result) => {
+            if (result.error) {
+              window.alert(result.error);
+            } else {
+              this.appMan = result.appMan;
+              this.gitMan = result.gitMan;
+              this.HEROKU_STACKS = result.HEROKU_STACKS;
+            }
+            this.appManAccountsKey++;
+            resolve(result);
+          });
+        });
+      },
+      showinfo(app) {
+        const w = window.open("", "_blank");
+        w.document.write(`<pre>${JSON.stringify(app, null, 2)}</pre>`);
+      },
+      cancelbuild(appName, buildId) {
+        post("cancelbuild", { appName, buildId }).then((result) => {
+          window.alert(JSON.stringify(result));
+        });
+      },
+      setstack(ev, app) {
+        const stack = ev.target.value;
+        post("setstack", { app, stack }).then((result) => {
+          window.alert(JSON.stringify(result));
+          this.allMan().then((result) => {});
+        });
+      },
+      setstacksame(ev, app) {
+        if (!ev.ctrlKey) {
+          return;
+        }
+        const stack = ev.target.value;
+        post("setstack", { app, stack }).then((result) => {
+          window.alert(JSON.stringify(result));
+          this.allMan().then((result) => {});
+        });
+      },
+      deploy() {
+        if (this.selAcc === "none") {
+          window.alert("Select Heroku Account");
+          return;
+        }
+        post("deployapp", {
+          herokuAccountName: this.selAcc,
+          appData: {
+            name: this.selApp,
+            targzUrl: this.getSelAppTargzUrl(),
+          },
+        }).then((result) => {
+          this.getAppData();
+        });
+      },
+      addapp() {
+        const name = window.prompt("App Name", this.selApp);
+        if (name) {
+          const targzUrl = window.prompt("Targz Url", this.getSelAppTargzUrl());
+
+          if (targzUrl) {
+            post("addappdata", {
+              appData: {
+                name,
+                targzUrl,
+              },
+            }).then((result) => {
+              this.getAppData();
+            });
+          } else {
+            window.alert("App Creation Canceled - Missing Targz Url");
+          }
+        } else {
+          window.alert("App Creation Canceled");
+        }
+      },
+      getSelAppTargzUrl() {
+        return this.selAppData() ? this.selAppData().targzUrl : "";
+      },
+      selAppData() {
+        return this.appData.find(
+          (ad) => ad.name === this.selApp || ad.name + "temp" === this.selApp
+        );
+      },
+      getAppData() {
+        post("getappdata").then((result) => {
+          if (Array.isArray(result)) {
+            this.appData = result;
+          }
+        });
+      },
+      commits(gitUsername, repo) {
+        window.open(`?commits=${gitUsername}&repo=${repo.name}`, "_blank");
+      },
+      sortReposFunc(a, b) {
+        if (this.sortReposBy === "pushedat")
+          return (
+            new Date(b.pushedAt).getTime() - new Date(a.pushedAt).getTime()
+          );
+        if (this.sortReposBy === "stars") return b.stars - a.stars;
+        if (this.sortReposBy === "forks") return b.forks - a.forks;
+
+        return a.name.localeCompare(b.name);
+      },
+      forkat(ev, account, repo) {
+        const gitUserName = ev.target.value;
+        ev.target.value = "";
+
+        const owner = account.gitUserName;
+        const name = repo.name;
+
+        post("fork", {
+          gitUserName,
+          owner,
+          name,
+        }).then((result) => {
+          if (result.forkResult.error) {
+            window.alert(JSON.stringify(result.forkResult));
+          } else {
+            this.gitMan = result.gitMan;
+          }
+        });
+      },
+      createrepo(gitUserName, init) {
+        const name = window.prompt("Name");
+        if (name) {
+          post("createrepo", {
+            gitUserName,
+            name,
+            init,
+          }).then((result) => {
+            if (result.createResult.error) {
+              window.alert(JSON.stringify(result.createResult));
+            } else {
+              this.gitMan = result.gitMan;
+            }
+          });
+        }
+      },
+      deleterepo(gitUserName, repo) {
+        const confirm = window.prompt(`Type "${repo.name}" To Delete`);
+
+        if (confirm === repo.name) {
+          post("deleterepo", {
+            gitUserName,
+            name: repo.name,
+          }).then((result) => {
+            if (result.deleteResult.error) {
+              window.alert(JSON.stringify(result.deleteResult));
+            } else {
+              this.gitMan = result.gitMan;
+            }
+          });
+        } else {
+          window.alert("Deletion Canceled");
+        }
+      },
+      uploadconfig() {
+        post("setconfig", {
+          name: this.params.appName,
+          config: this.params.config,
+        }).then((result) => {
+          if (result.error) {
+            window.alert(result.error);
+          } else {
+            document.location.reload();
+          }
+        });
+      },
+      addkey() {
+        const key = window.prompt("Key");
+        if (key) {
+          const value = window.prompt("Value");
+
+          if (value !== undefined && value !== null) {
+            const smartKey = key.toUpperCase().replace(/ /g, "_");
+            this.params.config[smartKey] = value;
+          }
+        }
+      },
+      editkey(key) {
+        const value = this.params.config[key];
+        const newKey = window.prompt("Key", key);
+        if (newKey) {
+          if (this.params.config[newKey] !== undefined) {
+            window.alert("Key already exists!");
+          } else {
+            delete this.params.config[key];
+            this.params.config[newKey] = value;
+          }
+        }
+      },
+      delkey(key) {
+        delete this.params.config[key];
+      },
+      editvalue(key) {
+        const value = this.params.config[key];
+        const newValue = window.prompt("Key", value);
+        if (newValue) {
+          this.params.config[key] = newValue;
+        }
+      },
+      getlogs(app) {
+        post("getlogs", { app }).then((result) => {
+          if (result.error) {
+            window.alert(result.error);
+          } else {
+            window.open(result.logplex_url, "_blank");
+          }
+        });
+      },
+      deleteapp(app) {
+        const confirm = window.prompt(`Type "${app.name}" To Delete`);
+
+        if (confirm === app.name) {
+          post("deleteapp", { name: app.name }).then((result) => {
+            if (result.error) {
+              window.alert(result.error);
+            } else {
+              this.appMan = result.appMan;
+            }
+          });
+        }
+      },
+      restartalldynos(app) {
+        post("restartalldynos", { name: app.name }).then((result) => {
+          if (result.error) {
+            window.alert(result.error);
+          } else {
+            window.alert(JSON.stringify(result));
+          }
+        });
+      },
+      getbuilds(app) {
+        window.open(`?builds=${app.name}`, "_blank");
+      },
+      getconfig(app) {
+        window.open(`?config=${app.name}`, "_blank");
+      },
+      setadminpass() {
+        const pass = window.prompt("Admin Pass");
+        localStorage.setItem("ADMIN_PASS", pass);
+        document.location.reload();
+      },
+      getCommits(gitUserName, repo, page) {
+        return new Promise((resolve) => {
+          post("getcommits", { gitUserName, repo, page }).then((result) => {
+            if (result.error) {
+              resolve({ error: result.error });
+            } else {
+              if (Array.isArray(result.data)) {
+                resolve({ data: result.data });
+              } else {
+                resolve({ error: "no commits data in result" });
+              }
+            }
+          });
+        });
+      },
+    },
+    data() {
+      return {
+        welcome: "Welcome to Heroku App Manager !",
+        appMan: { accounts: [] },
+        gitMan: { accounts: [] },
+        HEROKU_STACKS: [],
+        appManAccountsKey: 0,
+        appData: [],
+        selApp: "appvuetsexpress",
+        selAcc: "none",
+        params: {},
+        filterrepo: "",
+        sortReposBy: "pushedat",
+        sortReposByCriteria: [
+          { value: "pushedat", display: "Sort repos by most recent push" },
+          { value: "alphabetical", display: "Sort repos alphabetically" },
+          { value: "stars", display: "Sort repos by stars" },
+          { value: "forks", display: "Sort repos by forks" },
+        ],
+      };
+    },
+    async mounted() {
+      const params = new URL(document.location).searchParams;
+
+      this.getAppData();
+
+      const commits = params.get("commits");
+      if (commits) {
+        this.params.commits = [];
+        this.params.gitUserName = commits;
+
+        const repo = params.get("repo");
+        this.params.repo = repo;
+        this.params.commitsPerDay = {};
+        this.params.commitMessagesPerDay = {};
+        this.params.maxCommitsPerDay = 0;
+        this.params.avgCommitsPerDay = 0;
+        this.params.commitsPerDayArray = [];
+        this.params.scale = 4;
+
+        for (let page = 1; page <= 200; page++) {
+          const result = await this.getCommits(commits, repo, page);
+          if (result.error) break;
+          this.params.commits = this.params.commits.concat(result.data);
+
+          const commitsPerDay = {};
+          const commitMessagesPerDay = {};
+
+          for (let commit of this.params.commits) {
+            const date = commit.commit.committer.date;
+            const day = date.split("T")[0];
+
+            const messages = commitMessagesPerDay[day] || [];
+            if (messages.includes(commit.commit.message)) {
+            } else {
+              messages.push(commit.commit.message);
+              commitMessagesPerDay[day] = messages;
+              if (commitsPerDay[day]) {
+                commitsPerDay[day]++;
+              } else {
+                commitsPerDay[day] = 1;
+              }
+            }
+          }
+
+          this.params.commitsPerDay = commitsPerDay;
+          this.params.commitsPerDayArray = Object.keys(
+            this.params.commitsPerDay
+          )
+            .map((key) => this.params.commitsPerDay[key])
+            .slice()
+            .reverse();
+          this.params.maxCommitsPerDay = this.params.commitsPerDayArray.reduce(
+            (acc, curr) => (curr > acc ? curr : acc),
+            0
+          );
+          const totalCommits = this.params.commitsPerDayArray.length;
+          this.params.avgCommitsPerDay = totalCommits
+            ? this.params.commitsPerDayArray.reduce(
+                (acc, curr) => acc + curr,
+                0
+              ) / totalCommits
+            : 0;
+          this.params.commitMessagesPerDay = commitMessagesPerDay;
+        }
+
+        return;
+      }
+
+      const builds = params.get("builds");
+      if (builds) {
+        this.params.builds = [];
+
+        this.params.appName = builds;
+
+        post("getbuilds", { name: builds }).then((result) => {
+          if (result.error) {
+            window.alert(result.error);
+          } else {
+            this.params.builds = result;
+          }
+        });
+
+        return;
+      }
+
+      const config = params.get("config");
+      if (config) {
+        this.params.config = {};
+
+        this.params.appName = config;
+
+        post("getconfig", { name: config }).then((result) => {
+          if (result.error) {
+            window.alert(result.error);
+          } else {
+            this.params.config = result;
+          }
+        });
+
+        return;
+      }
+
+      this.allMan();
+    },
+  }).mount("#app");
+</script>

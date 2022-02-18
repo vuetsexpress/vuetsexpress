@@ -1,0 +1,5 @@
+set -e
+
+. s/env
+
+node dist/cli.js forkall

@@ -1,0 +1,5 @@
+set -e
+
+. s/env
+
+. s/configenv

@@ -1,0 +1,106 @@
+@mixin expandbutton {
+  width: 50px;
+  padding: 5px;
+  margin-right: 5px;
+}
+
+.confignode {
+  button {
+    padding: 3px;
+    padding-left: 6px;
+    padding-right: 6px;
+  }
+  margin: 5px;
+  padding: 5px;
+  background-color: #ddd !important;
+  .childs {
+    background-color: #ccc !important;
+    padding: 5px;
+    margin-left: 20px;
+    margin-top: 5px;
+  }
+  .expand {
+    @include expandbutton;
+    background-color: #afa;
+  }
+  .collapse {
+    @include expandbutton;
+    background-color: #faa;
+  }
+  .leaf {
+    background-color: #eee !important;
+    display: flex;
+    align-items: center;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    .key {
+      padding: 3px;
+      padding-left: 10px;
+      padding-right: 10px;
+      background-color: #efd;
+      font-family: monospace;
+      font-size: 20px;
+      font-weight: bold;
+      color: #900;
+    }
+    .value {
+      padding: 3px;
+      padding-left: 10px;
+      padding-right: 10px;
+      background-color: #9de;
+      font-family: monospace;
+      font-size: 20px;
+      margin-left: 10px;
+      max-height: 200px;
+      overflow: scroll;
+    }
+    .editvalue {
+      margin-left: 10px;
+      background-color: #afa;
+    }
+    .editkey {
+      margin-left: 10px;
+      background-color: #fd9;
+    }
+    .deletevalue {
+      margin-left: 10px;
+      background-color: #faa;
+    }
+  }
+  .controls {
+    display: flex;
+    align-items: center;
+    background-color: #9bc !important;
+    .upload {
+      margin-left: 10px;
+      background-color: #ffa;
+    }
+    .key {
+      padding: 3px;
+      padding-left: 10px;
+      padding-right: 10px;
+      background-color: #efd;
+      font-family: monospace;
+      font-size: 30px;
+      color: #00f;
+      font-weight: bold;
+      box-shadow: 3px 3px #777;
+    }
+    .editkey {
+      margin-left: 10px;
+      background-color: #fd9;
+    }
+    .addnode {
+      margin-left: 10px;
+      background-color: #aff;
+    }
+    .delnode {
+      margin-left: 10px;
+      background-color: #faa;
+    }
+    .addleaf {
+      margin-left: 10px;
+      background-color: #afa;
+    }
+  }
+}

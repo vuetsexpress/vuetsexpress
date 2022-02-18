@@ -1,0 +1,135 @@
+@use "misc";
+
+$seekbckg: #ffa !important;
+
+.showuser {
+  display: inline-block;
+  padding: 0px !important;
+  background-color: inherit !important;
+  margin: 1px !important;
+  .sucont {
+    @include misc.centerflex;
+    border: solid 1px #777 !important;
+    border-radius: 5px !important;
+    padding: 0px 5px 1px 5px !important;
+    background-color: #ffa !important;
+    .title {
+      background-color: inherit !important;
+      color: #007;
+      font-family: monospace;
+      font-weight: bold;
+      padding: 0px !important;
+      font-size: 18px;
+      margin: 0px 5px 0px 2px !important;
+    }
+    .suusername {
+      background-color: inherit !important;
+      padding: 1px 1px 1px 1px !important;
+      margin: 2px 0px 0px 0px !important;
+      color: #070 !important;
+    }
+  }
+}
+
+.createseek {
+  .controls {
+    @include misc.centerflex;
+    border: solid 1px #777;
+    border-radius: 10px;
+    padding: 5px;
+    background-color: #eee !important;
+    flex-wrap: wrap;
+    select {
+      font-size: 20px;
+      font-family: monospace;
+    }
+    .create {
+      padding: 5px;
+      background-color: #afa;
+      border-radius: 5px;
+      margin: 1px 10px 0px 5px !important;
+      //box-shadow: 3px 3px #777;
+    }
+  }
+  .showseek {
+    @include misc.centerflex;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+}
+
+@mixin seektype {
+  background-color: $seekbckg;
+  font-weight: bold;
+  font-family: monospace;
+  font-size: 18px;
+  padding: 0px 10px 1px 5px !important;
+}
+
+.showseek {
+  display: inline-block;
+  background-color: transparent !important;
+  padding: 0px !important;
+  margin: 3px !important;
+  .cont {
+    @include misc.centerflex;
+    flex-wrap: wrap;
+    border: solid 1px #777;
+    border-radius: 5px;
+    padding: 1px !important;
+    padding-left: 5px !important;
+    padding-right: 5px !important;
+    background-color: $seekbckg;
+    cursor: pointer;
+    .hyphen {
+      background-color: $seekbckg;
+      font-weight: bold;
+      font-style: italic;
+      color: #700;
+    }
+    .ismatch {
+      color: #070 !important;
+      @include seektype;
+    }
+    .isseek {
+      color: #007 !important;
+      @include seektype;
+    }
+    .user {
+    }
+    .variant {
+      color: #007;
+      background-color: $seekbckg;
+      padding: 1px !important;
+      margin-left: 5px !important;
+    }
+    .timecontrol {
+      color: #070;
+      font-weight: bold;
+      background-color: $seekbckg;
+      padding: 1px !important;
+      margin-left: 5px;
+      margin-right: 5px;
+    }
+    .rounds {
+      color: #700;
+      background-color: $seekbckg;
+      padding: 1px !important;
+    }
+    .rated {
+      color: #077;
+      background-color: $seekbckg;
+      padding: 1px !important;
+      margin-left: 5px;
+    }
+    .delete {
+      color: #000;
+      background-color: #faa;
+      padding: 1px !important;
+      margin-left: 5px;
+      border: solid 1px transparent;
+      border-radius: 5px;
+      font-size: 10px !important;
+    }
+  }
+}

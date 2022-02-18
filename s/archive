@@ -1,0 +1,13 @@
+set -e
+
+. s/env
+
+if test -f "repo.tar.gz"; then
+    rm repo.tar.gz
+fi
+
+git archive --format=tar.gz --output=repo.tar.gz HEAD
+
+yarn cli uploadapptargz
+
+rm repo.tar.gz

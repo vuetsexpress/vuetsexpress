@@ -1,0 +1,18 @@
+set -e
+
+# rollup
+#yarn add --dev rollup typescript rollup-plugin-typescript2 @rollup/plugin-node-resolve rollup-plugin-commonjs @rollup/plugin-json rollup-plugin-terser
+
+# web
+#yarn add --dev express @types/express nodemon sass @bity/oauth2-auth-code-pkce
+#yarb add node-fetch vue@next octokit
+
+# general
+#yarn add --dev prettier @types/lodash @types/parse-git-config
+#yarn add minimist mongodb lodash parse-git-config current-git-branch @types/current-git-branch
+
+# chess
+#yarn add @publishvue/chessopsnpmts @publishvue/chessground
+
+# post install
+#yarn add spawn-sync

@@ -1,0 +1,16 @@
+@use "globals";
+@use "app";
+@use "oauthwidget";
+@use "confignode";
+@use "tabs";
+@use "misc";
+@use "logger";
+@use "board";
+@use "createseek";
+@use "icons";
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}

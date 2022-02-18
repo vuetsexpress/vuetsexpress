@@ -1,0 +1,9 @@
+set -e
+
+git remote add vte https://github.com/vuetsexpress/vuetsexpress
+git fetch vte main
+git reset --hard vte/main
+
+yarn install
+
+yarn build

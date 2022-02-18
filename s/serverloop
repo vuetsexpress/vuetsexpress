@@ -1,0 +1,6 @@
+echo "< serverloop > started"
+while true
+do
+    node dist/server.js
+    echo "< serverloop > server stopped, restarting"
+done

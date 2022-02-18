@@ -1,0 +1,45 @@
+.oauthwidget {
+  display: inline-block;
+  .cont {
+    background-color: #aee !important;
+    padding: 1px !important;
+    border: solid 1px #777 !important;
+    border-radius: 5px;
+    button {
+      margin: 2px;
+      padding: 2px !important;
+      border: solid 1px #777 !important;
+    }
+    .login {
+      background-color: #cfc;
+    }
+    .logout {
+      background-color: #fdd;
+    }
+    display: flex;
+    align-items: center;
+    .username {
+      padding: 1px;
+      background-color: #ffa;
+      margin-left: 3px;
+      margin-right: 3px;
+      padding-right: 5px;
+      padding-left: 5px;
+      font-family: monospace;
+      font-size: 16px;
+      color: #070;
+    }
+    .admin {
+      padding: 3px !important;
+      padding-left: 6px !important;
+      padding-right: 6px !important;
+      margin-left: 3px;
+      margin-right: 3px;
+      background-color: #afa;
+      color: #700;
+      font-weight: bold;
+      font-family: monospace;
+      border: solid 1px #777;
+    }
+  }
+}

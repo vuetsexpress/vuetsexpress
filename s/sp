@@ -1,0 +1,14 @@
+set -e
+
+if compgen -G "*.log" > /dev/null; then
+    echo "removing log"
+    rm *.log
+fi
+
+git add -A
+
+echo "making commit < $* >"
+
+git commit -m "$*"
+
+s/pushall

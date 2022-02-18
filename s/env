@@ -1,0 +1,5 @@
+set -e
+
+eval $(gp env -e)
+
+. s/cryptenv

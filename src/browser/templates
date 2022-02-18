@@ -1,0 +1,27 @@
+// class component
+
+import { h, reactive, defineComponent } from "vue/dist/vue.esm-browser.prod";
+
+export class  {
+  react = reactive({
+      
+  });
+
+  constructor() {
+    
+  }
+
+  renderFunction() {
+    return h("div", { class: "" }, [
+    ]);
+  }
+
+  defineComponent() {
+    const self = this;
+    return defineComponent({
+      setup() {
+        return self.renderFunction.bind(self);
+      },
+    });
+  }
+}

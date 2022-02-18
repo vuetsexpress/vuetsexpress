@@ -1,0 +1,118 @@
+{
+  "migrateApps": ["appvuetsexpress", "easychess", "hypereasy", "amgilp"],
+  "apps": {
+    "appvuetsexpress": {
+      "preferredAccount": "HYPERCHESSBOTAUTHOR",
+      "allowedAccounts": ["RUSTBOTALT", "HYPERCHESSBOTAUTHOR"],
+      "targzUrl": "https://github.com/pythonideasalt/blobs/blob/main/apptargz/vuetsexpress.tar.gz?raw=true"
+    },
+    "easychess": {
+      "preferredAccount": "EASYCHESSANIMATIONS",
+      "allowedAccounts": [
+        "EASYCHESSANIMATIONS",
+        "BROWSERCAPTURES",
+        "BROWSERCAPTURESALT",
+        "AESTHETICBOOKSHELFALT",
+        "HYPERBOTAUTHORALT"
+      ],
+      "targzUrl": "https://github.com/browsercaptures/easychess/blob/master/repo.tar.gz?raw=true"
+    },
+    "hypereasy": {
+      "preferredAccount": "BROWSERCAPTURES",
+      "allowedAccounts": [
+        "EASYCHESSANIMATIONS",
+        "BROWSERCAPTURES",
+        "BROWSERCAPTURESALT",
+        "AESTHETICBOOKSHELFALT",
+        "HYPERBOTAUTHORALT"
+      ],
+      "targzUrl": "https://github.com/browsercaptures/scalachess/blob/js/repo.tar.gz?raw=true"
+    },
+    "amgilp": {
+      "preferredAccount": "BROWSERCAPTURESALT",
+      "allowedAccounts": [
+        "EASYCHESSANIMATIONS",
+        "BROWSERCAPTURES",
+        "BROWSERCAPTURESALT",
+        "AESTHETICBOOKSHELFALT",
+        "HYPERBOTAUTHORALT"
+      ],
+      "targzUrl": "https://github.com/browsercapturesalt/amgilp/blob/master/repo.tar.gz?raw=true"
+    },
+    "editconfig": {
+      "preferredAccount": "RUSTBOTALT",
+      "allowedAccounts": ["RUSTBOTALT"],
+      "targzUrl": "https://github.com/browsercapturesalt/blobs/blob/main/apptargz/config.tar.gz?raw=true"
+    }
+  },
+  "config": [
+    "ADMIN_PASS",
+    "ALLOW_SERVER_ENGINE",
+    "AMGILP_DISCORD_BOT_CLIEND_ID",
+    "AMGILP_DISCORD_BOT_TOKEN",
+    "BOT_COOKIE",
+    "BOT_TOKEN",
+    "BROWSERCAPTURESALT_GITHUB_TOKEN_FULL",
+    "BROWSERCAPTURESALT_NPM_TOKEN",
+    "BROWSERCAPTURES_GITHUB_TOKEN_FULL",
+    "DISCORD_BOT_TOKEN",
+    "DISCORD_CLIENT_ID",
+    "DISCORD_CLIENT_SECRET",
+    "EASYCHESSANIMATIONSALT_GITHUB_TOKEN_FULL",
+    "EASYCHESSANIMATIONS_GITHUB_TOKEN_FULL",
+    "EASYCHESS_GITHUB_TOKEN",
+    "EXPRESSMIN_GITHUB_TOKEN",
+    "FORGET_DELAY",
+    "GITHUB_CLIENT_ID",
+    "GITHUB_CLIENT_SECRET",
+    "HEROKUTARGZBUILD_TARGZURL",
+    "HEROKU_TOKEN",
+    "HEROKU_TOKEN_AESTHETICBOOKSHELF",
+    "HEROKU_TOKEN_AESTHETICBOOKSHELFALT",
+    "HEROKU_TOKEN_BROWSERCAPTURES",
+    "HEROKU_TOKEN_BROWSERCAPTURESALT",
+    "HEROKU_TOKEN_EASYCHESSANIMATIONS",
+    "HEROKU_TOKEN_HYPERBOTAUTHORALT",
+    "HEROKU_TOKEN_HYPERCHESSBOT",
+    "HEROKU_TOKEN_HYPERCHESSBOTAUTHOR",
+    "HEROKU_TOKEN_RUSTBOTALT",
+    "HEROKU_TOKEN_RUSTBOTCHESSAPP",
+    "HEROKU_TOKEN_VUETSEXPRESS",
+    "HEROKU_TOKEN_VUETSEXPRESSALT",
+    "HYPERBOTAUTHORALT_GITHUB_TOKEN_FULL",
+    "HYPERBOTAUTHOR_GITHUB_TOKEN_FULL",
+    "HYPERCHESSBOTALT_GITHUB_TOKEN_FULL",
+    "HYPERCHESSBOT_GITHUB_TOKEN_FULL",
+    "HYPER_GITHUB_TOKEN",
+    "HYPER_LICHESS_BOT_CLIENT_ID",
+    "HYPER_LICHESS_BOT_CLIENT_SECRET",
+    "HYPER_SITE_HOST",
+    "LEADERBOARD_FILE",
+    "LICHESS_BOT_CLIENT_ID",
+    "LICHESS_BOT_CLIENT_SECRET",
+    "LICHESS_CLIENT_ID",
+    "LICHESS_CLIENT_SECRET",
+    "LOG_DISCORD",
+    "MIGRATE_APPS",
+    "MIGRATE_DELAY",
+    "MIN_INITIAL_CLOCK",
+    "MONGODB_URI",
+    "PASSWORD",
+    "PYTHONIDEASALT_GITHUB_TOKEN_FULL",
+    "PYTHONIDEAS_GITHUB_TOKEN_FULL",
+    "QUERY_INTERVAL",
+    "RATE_MAX",
+    "RESAVE",
+    "SACCKEY0",
+    "SACCKEY1",
+    "SACCKEY2",
+    "SACCKEY3",
+    "SAVE_UNINITIALIZED",
+    "SKIP_TOURNEYWATCH",
+    "TARGZBUILD_APPNAME",
+    "TICK_INTERVAL",
+    "VUETSEXPRESSALT_GITHUB_TOKEN_FULL",
+    "VUETSEXPRESS_GITHUB_TOKEN_FULL",
+    "VUETSEXPRESS_GITLAB_TOKEN_FULL"
+  ]
+}

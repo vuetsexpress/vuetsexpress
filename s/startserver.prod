@@ -1,0 +1,7 @@
+set -e
+
+. s/cryptenv
+
+export APP_DISPOSITION=prod
+
+. s/serverloop

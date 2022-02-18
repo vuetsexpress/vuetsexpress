@@ -1,0 +1,110 @@
+<style>
+  .users {
+    border-collapse: collapse;
+    font-family: monospace;
+  }
+  .users td {
+    padding: 5px;
+    border: solid 1px #777;
+  }
+  .filterby {
+    font-size: 18px;
+    font-family: monospace;
+    margin-left: 10px;
+    color: #700;
+    padding: 5px;
+    padding-left: 10px;
+  }
+</style>
+
+<script src="/vue.js"></script>
+<script src="/utils.js"></script>
+
+<div id="app">
+  All Users
+  <input
+    placeholder="Filter By Regex"
+    type="text"
+    v-model="filterby"
+    class="filterby"
+  />
+  <hr />
+  <table class="users">
+    <tr v-for="user in filtered">
+      <td
+        :style="`font-size: 18px; color: ${user.lichessProfile?'#070':'#007'};`"
+      >
+        {{ user.username }}
+      </td>
+      <td>{{ user.lichessProfile ? "lichess" : "random" }}</td>
+      <td>{{ user.id }}</td>
+      <td>{{ new Date(user.createdAt).toLocaleString() }}</td>
+      <td>
+        <select @change="settitle($event, user)">
+          <option
+            v-for="title in POSSIBLE_TITLES"
+            :value="title"
+            :selected="title === user.title"
+          >
+            {{title}}
+          </option>
+        </select>
+      </td>
+      <td>
+        <button style="background-color: #faa" @click="deluser(user)">
+          Delete
+        </button>
+      </td>
+    </tr>
+  </table>
+</div>
+
+<script>
+  document.title = "All Users";
+  Vue.createApp({
+    computed: {
+      filtered: function () {
+        console.log("this", this);
+        return this.allUsers.filter((user) =>
+          user.username.match(new RegExp(this.filterby, "i"))
+        );
+      },
+    },
+    methods: {
+      deluser(user) {
+        if (!confirm(`delete user < ${user.username} >`, user.username)) return;
+        post("deluser", { user }).then((result) => {
+          alertError(result);
+          this.getAllUsers();
+        });
+      },
+      settitle(ev, user) {
+        user.title = ev.target.value;
+        post("settitle", { user }).then((result) => {
+          alertError(result);
+          this.getAllUsers();
+        });
+      },
+      getAllUsers() {
+        post("getallusers").then((result) => {
+          if (Array.isArray(result.allUsers)) {
+            this.POSSIBLE_TITLES = result.POSSIBLE_TITLES;
+            this.allUsers = result.allUsers;
+          } else {
+            window.alert("Could not get all users.");
+          }
+        });
+      },
+    },
+    data() {
+      return {
+        POSSIBLE_TITLES: [],
+        allUsers: [],
+        filterby: "",
+      };
+    },
+    async mounted() {
+      this.getAllUsers();
+    },
+  }).mount("#app");
+</script>

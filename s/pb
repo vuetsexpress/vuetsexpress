@@ -1,0 +1,7 @@
+set -e
+
+s/p "$*"
+
+export APP_DISPOSITION=dev
+
+s/deploy

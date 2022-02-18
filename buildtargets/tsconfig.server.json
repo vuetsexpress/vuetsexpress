@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    // https://www.typescriptlang.org/tsconfig#lib
+    "lib": ["es2015"],
+    // https://www.typescriptlang.org/tsconfig#target
+    "target": "es2015",
+    // https://www.typescriptlang.org/tsconfig#esModuleInterop
+    "esModuleInterop": true,
+    // https://www.typescriptlang.org/tsconfig#allowSyntheticDefaultImports
+    "allowSyntheticDefaultImports": true,
+    // https://www.typescriptlang.org/tsconfig#moduleResolution
+    "moduleResolution": "node",
+    // https://www.typescriptlang.org/tsconfig#skipLibCheck
+    "skipLibCheck": true,
+    // https://www.typescriptlang.org/tsconfig#importHelpers
+    "importHelpers": true,
+    // https://www.typescriptlang.org/tsconfig#module
+    "module": "es2015",
+    // https://www.typescriptlang.org/tsconfig#strict
+    "strict": true,
+    // https://www.typescriptlang.org/tsconfig#strictPropertyInitialization
+    "strictPropertyInitialization": false
+  }
+}

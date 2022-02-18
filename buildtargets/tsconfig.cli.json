@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    // https://www.typescriptlang.org/tsconfig#lib
+    "lib": ["ES2015"],
+    // https://www.typescriptlang.org/tsconfig#target
+    "target": "ES2015",
+    // https://www.typescriptlang.org/tsconfig#esModuleInterop
+    "esModuleInterop": true,
+    // https://www.typescriptlang.org/tsconfig#allowSyntheticDefaultImports
+    "allowSyntheticDefaultImports": true,
+    // https://www.typescriptlang.org/tsconfig#strict
+    "strict": true,
+    // https://www.typescriptlang.org/tsconfig#strictPropertyInitialization
+    "strictPropertyInitialization": false
+  }
+}

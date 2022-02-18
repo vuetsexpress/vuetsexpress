@@ -1,0 +1,242 @@
+#appcont {
+  display: none;
+}
+
+$griddivbckg: #aaf;
+
+body {
+  background-color: $griddivbckg;
+}
+
+///////////////////////////////////////////////
+
+#welcome {
+  width: 100%;
+  text-align: center;
+  margin-top: 100px;
+  font-size: 40px;
+  color: #00f;
+  font-weight: bold;
+  background-color: $griddivbckg;
+}
+
+///////////////////////////////////////////////
+
+$gridgap: 3px;
+$fullvertheight: 30px;
+$splitvertheight: 35px;
+$totalvertheight: calc($fullvertheight + $splitvertheight + 2 * $gridgap + 3px);
+$gridbckg: #88f;
+
+@mixin griddiv {
+  padding: $gridgap;
+  background-color: $griddivbckg;
+}
+
+///////////////////////////////////////////////
+
+.app {
+  .title {
+    font-weight: bold;
+    color: #00f;
+  }
+  .tophr {
+    margin-top: 8px;
+    margin-bottom: 5px;
+  }
+  .own {
+    box-shadow: 4px 4px #0f0;
+  }
+  .profileinfo {
+    display: inline-block;
+    margin: 7px 5px 3px;
+    padding: 5px 20px 5px 20px !important;
+    border: solid 1px #070;
+    color: #070;
+    background-color: #fff !important;
+  }
+  .profileinfo.none {
+    color: #700 !important;
+  }
+  .perfs {
+    border-collapse: collapse;
+    background-color: #bed !important;
+    margin: 5px 5px;
+    .head {
+      font-weight: bold;
+    }
+    td {
+      padding: 5px 10px 5px 10px;
+      border: solid 1px #777;
+    }
+  }
+  .profilecont {
+    button {
+      margin: 5px;
+      padding: 5px;
+      font-size: 20px;
+    }
+    .login {
+      background-color: #afa;
+    }
+    .reveal {
+    }
+  }
+  .activeuser {
+    display: inline-block;
+    padding: 1px !important;
+    padding-left: 5px !important;
+    padding-right: 5px !important;
+    margin: 1px !important;
+    background-color: #ffa !important;
+    color: #070;
+  }
+  .logscont {
+    --header-height: 100px;
+    display: grid;
+    max-height: 100% !important;
+    grid-template-rows: var(--header-height) calc(
+        100% - var(--header-height) - $gridgap
+      );
+    grid-row-gap: $gridgap;
+    background-color: #d77 !important;
+    padding: $gridgap;
+    div {
+      padding: $gridgap;
+      background-color: #bed !important;
+    }
+    .controls {
+      @include griddiv;
+      grid-row: 1;
+      .cli {
+        margin-left: 10px;
+        width: 400px;
+        font-size: 18px;
+        font-family: monospace;
+        padding: 3px 3px 3px 6px !important;
+        color: #007 !important;
+      }
+    }
+    .weblogger {
+      @include griddiv;
+      grid-row: 2;
+      overflow: scroll;
+    }
+  }
+  .grid {
+    background-color: $gridbckg;
+    width: 100vw;
+    height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr;
+    grid-template-rows:
+      $fullvertheight $splitvertheight calc(50% - $totalvertheight)
+      calc(50% - $totalvertheight) $splitvertheight $fullvertheight;
+    grid-column-gap: $gridgap;
+    grid-row-gap: $gridgap;
+    align-items: stretch;
+    justify-items: stretch;
+    .chatmessages {
+      width: 100%;
+      height: calc(100% - 20px);
+      overflow: scroll;
+      .username {
+        display: inline-block;
+        padding: 1px !important;
+        color: #070;
+        font-weight: bold;
+        font-style: italic;
+      }
+      .message {
+        display: inline-block;
+        max-width: 300px;
+        padding: 1px !important;
+        color: #007;
+        font-weight: bold;
+        margin-left: 3px;
+      }
+    }
+    .chatinput {
+      margin-top: 2px;
+      width: 100%;
+    }
+    .topheader {
+      @include griddiv;
+      grid-column: 1 / 4;
+      grid-row: 1;
+      overflow: hidden;
+    }
+    .header.left {
+      @include griddiv;
+      grid-column: 1;
+      grid-row: 2;
+    }
+    .header.middle {
+      @include griddiv;
+      grid-column: 2;
+      grid-row: 2;
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+    }
+    .header.right {
+      @include griddiv;
+      grid-column: 3;
+      grid-row: 2;
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      overflow: hidden;
+    }
+    .content.left.top {
+      @include griddiv;
+      grid-column: 1;
+      grid-row: 3;
+      overflow: scroll;
+    }
+    .content.left.bottom {
+      @include griddiv;
+      grid-column: 1;
+      grid-row: 4 / 6;
+    }
+    .content.middle {
+      @include griddiv;
+      grid-column: 2;
+      grid-row: 3 / 5;
+      padding-left: 2px !important;
+      padding-right: 2px !important;
+    }
+    .content.right.top {
+      @include griddiv;
+      grid-column: 3;
+      grid-row: 3;
+      overflow: scroll;
+    }
+    .content.right.bottom {
+      @include griddiv;
+      grid-column: 3;
+      grid-row: 4 / 6;
+      overflow: scroll;
+    }
+    /*.footer.left {
+      @include griddiv;
+      grid-column: 1;
+      grid-row: 5;
+    }*/
+    .footer.middle {
+      @include griddiv;
+      grid-column: 2;
+      grid-row: 5;
+    }
+    /*.footer.right {
+      @include griddiv;
+      grid-column: 3;
+      grid-row: 5;
+    }*/
+    .bottomfooter {
+      @include griddiv;
+      grid-column: 1 / 4;
+      grid-row: 6 / 7;
+    }
+  }
+}

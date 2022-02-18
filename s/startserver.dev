@@ -1,0 +1,7 @@
+set -e
+
+. s/env
+
+export APP_DISPOSITION=dev
+
+. s/serverloop

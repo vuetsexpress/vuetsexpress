@@ -1,0 +1,24 @@
+set -e
+
+if test -f "config"; then
+    echo "copying config to git config"
+    cp config .git/config
+fi
+
+ORIGIN_URL=$(node dist/cli.js originurl)
+echo "rebasing $ORIGIN_URL"
+
+if test -f ".git/config"; then
+    echo "copying git config to config"
+    cp .git/config config
+fi
+
+if [ -d ".git" ]; then
+    echo "removing git"
+    rm -rf .git
+fi
+
+git init
+git checkout -b main
+git remote add origin $ORIGIN_URL 
+git remote -v

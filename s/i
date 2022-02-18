@@ -1,0 +1,7 @@
+set -e
+
+. s/rebase
+
+export FORCE_PUSH="true"
+
+. s/pb "Initial commit"

@@ -1,0 +1,22 @@
+.tabs {
+  padding: 0px !important;
+  width: 100%;
+  .cont {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    padding: 1px !important;
+  }
+  .tab {
+    padding: 1px;
+    border: solid 1px;
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 3px !important;
+    padding-left: 6px !important;
+    padding-right: 6px !important;
+  }
+  .tab.selected {
+    background-color: #afa;
+  }
+}
