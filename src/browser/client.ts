@@ -306,7 +306,7 @@ const topHeader = () =>
   centeredFlex(h("div", { style: { color: "#ff0" }, innerHTML: react.header }));
 
 const headerLeft = () =>
-  centeredFlex(h("div", { class: "title" }, "Vue Ts Express"));
+  centeredFlex(h("div", { class: "title" }, globalReact.appDisplayName));
 
 const headerMiddle = () => h(tabs.defineComponent());
 

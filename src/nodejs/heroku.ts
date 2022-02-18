@@ -109,6 +109,10 @@ function patch(endpoint: string, payload: any, token: string, accept?: string) {
 
 //////////////////////////////////////////////////////////////////////
 
+export function appNameOrDefault(nameOpt?: string) {
+  return nameOpt || DEFAULT_APP_NAME;
+}
+
 export function getConfig() {
   return Promise.resolve({ content: undefined });
 }
@@ -791,7 +795,7 @@ export class HerokuAppManager {
         final: "no apps in appconf",
       };
 
-    const appName = appNameOpt || DEFAULT_APP_NAME;
+    const appName = appNameOrDefault(appNameOpt);
 
     syslog("get best quota", appName);
 
@@ -849,7 +853,7 @@ export class HerokuAppManager {
   }
 
   getMigrateDecision(appNameOpt?: string): MigrateResult {
-    const appName = appNameOpt || DEFAULT_APP_NAME;
+    const appName = appNameOrDefault(appNameOpt);
     const tempAppName = appName + "temp";
 
     syslog("get migrate decision", appName);
@@ -908,7 +912,7 @@ export class HerokuAppManager {
   }
 
   migrateOnce(appNameOpt?: string): Promise<MigrateResult> {
-    const appName = appNameOpt || DEFAULT_APP_NAME;
+    const appName = appNameOrDefault(appNameOpt);
     const tempAppName = appName + "temp";
 
     syslog("migrate once", appName, tempAppName);
@@ -1011,7 +1015,7 @@ export class HerokuAppManager {
   }
 
   migrate(appNameOpt?: string): Promise<MigrateResult> {
-    const appName = appNameOpt || DEFAULT_APP_NAME;
+    const appName = appNameOrDefault(appNameOpt);
     const tempAppName = appName + "temp";
 
     syslog("migrate", appName);
@@ -1115,7 +1119,7 @@ export class HerokuAppManager {
   }
 
   setConfig(nameOpt?: string, configOpt?: any) {
-    const name = nameOpt || DEFAULT_APP_NAME;
+    const name = appNameOrDefault(nameOpt);
     const app = this.getAppByName(name);
     return new Promise((resolve) => {
       if (app) {
@@ -1131,7 +1135,7 @@ export class HerokuAppManager {
   }
 
   getConfig(nameOpt?: string) {
-    const name = nameOpt || DEFAULT_APP_NAME;
+    const name = appNameOrDefault(nameOpt);
     const app = this.getAppByName(name);
     return new Promise((resolve) => {
       if (app) {
@@ -1147,7 +1151,7 @@ export class HerokuAppManager {
   }
 
   getLogs(nameOpt?: string, lpOpt?: LogParams) {
-    const name = nameOpt || DEFAULT_APP_NAME;
+    const name = appNameOrDefault(nameOpt);
     const app = this.getAppByName(name);
     return new Promise((resolve) => {
       if (app) {
@@ -1163,7 +1167,7 @@ export class HerokuAppManager {
   }
 
   getBuilds(nameOpt?: string) {
-    const name = nameOpt || DEFAULT_APP_NAME;
+    const name = appNameOrDefault(nameOpt);
     const app = this.getAppByName(name);
     return new Promise((resolve) => {
       if (app) {
@@ -1179,7 +1183,7 @@ export class HerokuAppManager {
   }
 
   isBuilt(nameOpt?: string) {
-    const name = nameOpt || DEFAULT_APP_NAME;
+    const name = appNameOrDefault(nameOpt);
     const app = this.getAppByName(name);
     return new Promise((resolve) => {
       if (app) {
@@ -1209,7 +1213,7 @@ export class HerokuAppManager {
   }
 
   deleteUnbuilt(nameOpt?: string): Promise<MigrateResult> {
-    const name = nameOpt || DEFAULT_APP_NAME;
+    const name = appNameOrDefault(nameOpt);
 
     return new Promise(async (resolve) => {
       while (true) {
@@ -1255,7 +1259,7 @@ export class HerokuAppManager {
   }
 
   deleteApp(nameOpt: string) {
-    const name = nameOpt || DEFAULT_APP_NAME;
+    const name = appNameOrDefault(nameOpt);
     const acc = this.getAccountByAppName(name);
     return new Promise((resolve) => {
       if (acc) {
@@ -1271,7 +1275,7 @@ export class HerokuAppManager {
   }
 
   restartAllDynos(nameOpt: string) {
-    const name = nameOpt || DEFAULT_APP_NAME;
+    const name = appNameOrDefault(nameOpt);
     const acc = this.getAccountByAppName(name);
     return new Promise((resolve) => {
       if (acc) {
@@ -1318,7 +1322,7 @@ export class HerokuAppManager {
   }
 
   deployApp(nameOpt?: string, strategyOpt?: DeployStrategy) {
-    const name = nameOpt || DEFAULT_APP_NAME;
+    const name = appNameOrDefault(nameOpt);
     const strategy = strategyOpt || {};
     const migrationStrategy =
       strategy.migrationStrategy || DEFAULT_MIGRATION_STRATEGY;

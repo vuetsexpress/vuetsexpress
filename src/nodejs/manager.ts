@@ -2,6 +2,7 @@ import { GitHubAccountManager } from "./github";
 import { HerokuAppManager, HEROKU_STACKS } from "./heroku";
 import { Router } from "./utils";
 import { CRYPTENV } from "./crypto";
+import { DEFAULT_REPO_NAME } from "../shared/config";
 
 /////////////////////////////////////////////////////////////////////////
 
@@ -41,7 +42,7 @@ export class Manager {
 
       if (acc) {
         acc
-          .getGitContentJsonDec("blobs", "config/vuetsexpress", {})
+          .getGitContentJsonDec("blobs", `config/${DEFAULT_REPO_NAME}`, {})
           .then((blob) => {
             res.json(blob);
           });
@@ -57,7 +58,7 @@ export class Manager {
         acc
           .upsertGitContentJsonEnc(
             "blobs",
-            "config/vuetsexpress",
+            `config/${DEFAULT_REPO_NAME}`,
             req.body.config || {}
           )
           .then((result) => {

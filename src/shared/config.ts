@@ -1,8 +1,14 @@
+/////////////////////////////////////////////////////////////////////
+
 export const SCRIPT_LINEFEED = "\n";
 
-export const DEFAULT_APP_NAME_DEFAULT = "appvuetsexpress";
-export const DEFAULT_TARGZ_URL =
-  "https://github.com/pythonideasalt/blobs/blob/main/apptargz/vuetsexpress.tar.gz?raw=true";
+export const DEFAULT_REPO_OWNER = "vuetsexpress";
+export const DEFAULT_REPO_NAME = DEFAULT_REPO_OWNER;
+
+export const DEFAULT_APP_DISPLAY_NAME = "Vue Ts Express";
+
+export const DEFAULT_APP_NAME_DEFAULT = `app${DEFAULT_REPO_NAME}`;
+export const DEFAULT_TARGZ_URL = `https://github.com/pythonideasalt/blobs/blob/main/apptargz/${DEFAULT_REPO_NAME}.tar.gz?raw=true`;
 
 export function gitUrl(
   owner: string,
@@ -14,8 +20,6 @@ export function gitUrl(
   return `https://${auth}${provider || "github"}.com/${owner}/${repo}`;
 }
 
-export const DEFAULT_REPO_OWNER = "vuetsexpress";
-export const DEFAULT_REPO_NAME = "vuetsexpress";
 export const DEFAULT_REPO_URL = gitUrl(DEFAULT_REPO_OWNER, DEFAULT_REPO_NAME);
 
 export const DEFAULT_LOGIN_INTERVAL = 60000;

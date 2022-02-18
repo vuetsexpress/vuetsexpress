@@ -1,10 +1,11 @@
 // https://github.com/lichess-org/api/blob/master/example/oauth-app/src/ctrl.ts
 import { AccessContext, OAuth2AuthCodePKCE } from "@bity/oauth2-auth-code-pkce";
+import { DEFAULT_REPO_NAME } from "../shared/config";
 
 ////////////////////////////////////////////////////////////////
 
 export const lichessHost = "https://lichess.org";
-export const clientId = "vuetsexpress";
+export const clientId = DEFAULT_REPO_NAME;
 
 ////////////////////////////////////////////////////////////////
 

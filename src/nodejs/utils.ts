@@ -5,6 +5,7 @@ import fs from "fs";
 import { JsonSerializable } from "../shared/models";
 import { CRYPTENV } from "./crypto";
 import { ADMIN_PASS } from "./config";
+import gitConfigParser from "parse-git-config";
 
 /////////////////////////////////////////////////////////////////
 
@@ -14,6 +15,38 @@ export let syslog = (...args: any) => {
 
 export function setSyslog(syslogFunc: any) {
   syslog = syslogFunc;
+}
+
+/////////////////////////////////////////////////////////////////
+
+export function parseGitConfig(): any {
+  const parsed = gitConfigParser.sync();
+
+  const remoteOrigin = parsed[`remote "origin"`];
+
+  if (remoteOrigin) {
+    const url = remoteOrigin.url;
+    if (url) {
+      parsed.originUrl = url;
+      const m = url.match(/^https:\/\/github.com\/([^\/]+)/);
+      if (m) {
+        parsed.originGitUserName = m[1];
+      }
+    }
+  }
+
+  const originUrl = parsed.originUrl;
+
+  const originUrlParts = originUrl.split(/\//);
+  const repoUrl = originUrlParts[originUrlParts.length - 1];
+  const repo = repoUrl.replace(/\.git$/, "");
+
+  return {
+    parsed,
+    originUrl,
+    repo,
+    originGitUserName: parsed.originGitUserName,
+  };
 }
 
 /////////////////////////////////////////////////////////////////

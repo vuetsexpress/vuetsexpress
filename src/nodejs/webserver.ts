@@ -17,12 +17,11 @@ import {
 } from "./config";
 import { DEFAULT_APP_URL } from "./heroku";
 import fetch from "node-fetch";
+import { GIT_REPO_NAME, DATABASE_NAME } from "./config";
 
 ////////////////////////////////////////////////////////////////////
 
 export function mountWebServer() {
-  const APP_NAME = "vuetsexpress";
-
   const app = express();
 
   const router = new Router().mount("/", app);
@@ -36,7 +35,7 @@ export function mountWebServer() {
 
   const client = new Client();
 
-  const appDb = client.db(APP_NAME);
+  const appDb = client.db(DATABASE_NAME);
 
   const login = new Login({
     appDb,
@@ -121,7 +120,7 @@ export function mountWebServer() {
 
     app.listen(PORT, () => {
       console.log(
-        `< ${APP_NAME} > < ${APP_DISPOSITION} > < branch [ ${CURRENT_GIT_BRANCH} ] > listening on port < ${PORT} >`
+        `< ${GIT_REPO_NAME} > < ${APP_DISPOSITION} > < branch [ ${CURRENT_GIT_BRANCH} ] > listening on port < ${PORT} >`
       );
 
       if (IS_PROD) {

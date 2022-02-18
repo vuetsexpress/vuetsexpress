@@ -6,10 +6,9 @@ import { FORK_ALL_DELAY, CURRENT_GIT_BRANCH } from "./config";
 
 import fs from "fs";
 
-import { writeJson } from "./utils";
+import { writeJson, parseGitConfig } from "./utils";
 import { pause } from "../shared/utils";
 
-import gitConfigParser from "parse-git-config";
 import { storeCryptEnv, getCryptEnv, CRYPTENV } from "./crypto";
 import { PACKAGE_JSON } from "./config";
 
@@ -18,7 +17,7 @@ import { PACKAGE_JSON } from "./config";
 export const UPLOAD_APPTARGZ_ACCOUNT = "pythonideasalt";
 export const CONFIG_ACCOUNT = "pythonideasalt";
 export const OLD_CONFIG_ACCOUNT = "browsercapturesalt";
-export const APP_NAME = "vuetsexpress";
+export const CONFIG_BLOB_NAME = DEFAULT_REPO_NAME;
 
 //////////////////////////////////////////////////////////////////
 
@@ -76,29 +75,6 @@ export function forkAll(gitMan: GitHubAccountManager) {
 
     resolve({ done: true });
   });
-}
-
-export function parseGitConfig() {
-  const parsed = gitConfigParser.sync();
-
-  const remoteOrigin = parsed[`remote "origin"`];
-
-  if (remoteOrigin) {
-    const url = remoteOrigin.url;
-    if (url) {
-      parsed.originUrl = url;
-      const m = url.match(/^https:\/\/github.com\/([^\/]+)/);
-      if (m) {
-        parsed.originGitUserName = m[1];
-      }
-    }
-  }
-
-  return {
-    parsed,
-    originUrl: parsed.originUrl,
-    originGitUserName: parsed.originGitUserName,
-  };
 }
 
 //////////////////////////////////////////////////////////////////
@@ -437,7 +413,7 @@ function _configenv(argv: any) {
     }
 
     acc
-      .getGitContentJsonDec("blobs", `config/${APP_NAME}`, {})
+      .getGitContentJsonDec("blobs", `config/${CONFIG_BLOB_NAME}`, {})
       .then((blob: any) => {
         if (blob.content) {
           let stdout = "";
@@ -480,7 +456,7 @@ function _uploadapptargz(argv: any) {
       return;
     }
 
-    const appName = argv.appName || "vuetsexpress";
+    const appName = argv.appName || DEFAULT_REPO_NAME;
 
     acc
       .upsertGitContent("blobs", `apptargz/${appName}.tar.gz`, apptargz)

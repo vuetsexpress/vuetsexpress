@@ -1,5 +1,5 @@
 import { Router, readFile } from "./utils";
-import { APP_DISPOSITION, IS_DEV } from "./config";
+import { APP_DISPOSITION, IS_DEV, APP_DISPLAY_NAME } from "./config";
 import { MINUTE, SECOND } from "../shared/time";
 
 /////////////////////////////////////////////////////////////////////
@@ -14,13 +14,11 @@ export class Static {
 
     this.router.get("/", (req: any, res: any) => {
       //this.router.sendView(res, "index.html");
-      const index = readFile(
-        this.router.viewPath("index.html"),
-        "Vue Ts Express Index"
-      );
+      const index = readFile(this.router.viewPath("index.html"), "Index");
       const CLIENT_APP_CONF = {
         APP_DISPOSITION,
         HOT_RELOAD_INTERVAL: IS_DEV ? 1 * SECOND : 2 * MINUTE,
+        APP_DISPLAY_NAME,
       };
       const patched = index.replace(
         "//APP_CONF",

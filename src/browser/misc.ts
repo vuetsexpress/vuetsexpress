@@ -1,7 +1,7 @@
 import { h, reactive, ref } from "vue/dist/vue.esm-browser.prod";
 import { post } from "./api";
 import { JsonSerializable, User, Match, Seek } from "../shared/models";
-import { MAX_STORED_SEEKS } from "../shared/config";
+import { MAX_STORED_SEEKS, DEFAULT_APP_DISPLAY_NAME } from "../shared/config";
 
 ////////////////////////////////////////////////////////////
 
@@ -12,6 +12,8 @@ export class GlobalReact {
   matches: Match[] = [];
   seeks: Seek[] = [];
   announce: string = "Announcements will be shown here ...";
+  appDisplayName: string =
+    APP_CONF.APP_DISPLAY_NAME || DEFAULT_APP_DISPLAY_NAME;
 
   getPerfs() {
     if (this.user.lichessProfile) {
