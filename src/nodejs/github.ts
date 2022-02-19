@@ -4,6 +4,9 @@ import { Crypto, CRYPTENV } from "./crypto";
 
 import { syslog } from "./utils";
 
+import { DEFAULT_REPO_OWNER } from "../shared/config";
+import { GIT_REPO_NAME } from "./config";
+
 ////////////////////////////////////////////////////////////////////////
 
 const crypto = new Crypto();
@@ -378,6 +381,20 @@ export class GitHubAccountManager {
     return {
       accounts: this.accounts.map((acc) => acc.serialize()),
     };
+  }
+  createRepo(ownerOpt?: string, nameOpt?: string) {
+    const owner = ownerOpt || DEFAULT_REPO_OWNER;
+    const name = nameOpt || GIT_REPO_NAME;
+
+    const acc = this.getAccountByGitUserName(owner);
+
+    return new Promise((resolve) => {
+      if (acc) {
+        acc.createRepo({ name });
+      } else {
+        resolve({ error: "no such account" });
+      }
+    });
   }
   init() {
     //syslog("initializing git manager");

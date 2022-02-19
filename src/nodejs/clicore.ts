@@ -466,6 +466,22 @@ function _uploadapptargz(argv: any) {
   });
 }
 
+function _createforks(argv: any) {
+  return new Promise(async (resolve) => {
+    for (const provider in PACKAGE_JSON.forks) {
+      if (provider === "github") {
+        Promise.all(
+          PACKAGE_JSON.forks[provider].map((owner: string) => {
+            gitMan.createRepo(owner);
+          })
+        ).then((result: any) => {
+          resolve(result);
+        });
+      }
+    }
+  });
+}
+
 function _commits(argv: any) {
   return new Promise((resolve) => {
     const acc = gitMan.getAccountByGitUserName(argv.user);
@@ -674,6 +690,14 @@ export const COMMANDS = [
     [],
     {},
     _uploadapptargz,
+    initGitMan
+  ),
+  new Command(
+    "createforks",
+    "create fork repos",
+    [],
+    {},
+    _createforks,
     initGitMan
   ),
   new Command(

@@ -13,7 +13,10 @@ import { parseGitConfig } from "./utils";
 export const PACKAGE_JSON = readJson("package.json", { scripts: {} });
 
 export const GIT_REPO_NAME =
-  PACKAGE_JSON.repoName || parseGitConfig().repo || DEFAULT_REPO_NAME;
+  process.env.GIT_REPO_NAME ||
+  PACKAGE_JSON.repoName ||
+  parseGitConfig().repo ||
+  DEFAULT_REPO_NAME;
 export const DEFAULT_DATABASE_NAME = GIT_REPO_NAME || DEFAULT_REPO_NAME;
 export const DATABASE_NAME = PACKAGE_JSON.databaseName || DEFAULT_DATABASE_NAME;
 export const APP_DISPLAY_NAME =
