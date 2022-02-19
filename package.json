@@ -1,7 +1,7 @@
 {
   "name": "vuetsexpress",
   "version": "1.0.0",
-  "description": "A powerful web application framework using a Vue 3 Composition API client and an Express server, all written in Typescript and bundled using Rollup.js. The repo is configured as a GitPod Workspace to facilitate portable and straighforward development. The app can be deployed to Heroku from a GitHub uploaded tarball using its CLI. Implements a chess playing interface.",
+  "description": "A powerful web application framework using a Vue 3 Composition API client and an Express server, all written in Typescript and bundled using Rollup.js. The repo is configured as a GitPod Workspace to facilitate portable and straighforward development. The app can be deployed to Heroku from a GitHub uploaded tarball using its CLI.  Implements a chess playing interface.",
   "keywords": [
     "Vue3",
     "Composition",

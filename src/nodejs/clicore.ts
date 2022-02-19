@@ -1,12 +1,27 @@
 import { GitHubAccountManager, createGitlabRepo } from "./github";
-import { HerokuAppManager, APP_CONF } from "./heroku";
+import {
+  HerokuAppManager,
+  APP_CONF,
+  DEFAULT_APP_NAME,
+  DEFAULT_APP_URL,
+} from "./heroku";
 import { randUserName } from "../shared/randusername";
-import { DEFAULT_REPO_NAME, gitUrl, SCRIPT_LINEFEED } from "../shared/config";
-import { FORK_ALL_DELAY, CURRENT_GIT_BRANCH, GIT_REPO_NAME } from "./config";
+import {
+  DEFAULT_REPO_NAME,
+  gitUrl,
+  SCRIPT_LINEFEED,
+  DEFAULT_REPO_URL,
+} from "../shared/config";
+import {
+  FORK_ALL_DELAY,
+  CURRENT_GIT_BRANCH,
+  GIT_REPO_NAME,
+  APP_DISPLAY_NAME,
+} from "./config";
 
 import fs from "fs";
 
-import { writeJson, parseGitConfig } from "./utils";
+import { writeJson, parseGitConfig, readFile } from "./utils";
 import { pause } from "../shared/utils";
 
 import { storeCryptEnv, getCryptEnv, CRYPTENV } from "./crypto";
@@ -128,6 +143,40 @@ export class Command {
 }
 
 //////////////////////////////////////////////////////////////////
+
+function actualizeReadme() {
+  let tpl = readFile("misc/templates/README.md");
+
+  tpl = tpl.replace("__HEROKU_APP_URL__", DEFAULT_APP_URL);
+  tpl = tpl.replace("__GIT_REPO_URL__", DEFAULT_REPO_URL);
+
+  const forks = [];
+
+  for (const provider in PACKAGE_JSON.forks) {
+    for (const owner of PACKAGE_JSON.forks[provider]) {
+      forks.push(`${gitUrl(owner, GIT_REPO_NAME, provider)}`);
+    }
+  }
+
+  let readme = `# ${APP_DISPLAY_NAME}
+
+${PACKAGE_JSON.description.replace(/  /g, "\n\n")}
+
+${tpl}
+
+# Forks
+
+${forks.join("\n\n")}`;
+
+  fs.writeFileSync("README.md.act", readme);
+}
+
+function _actualize(argv: any) {
+  return new Promise((resolve) => {
+    actualizeReadme();
+    resolve({ done: true });
+  });
+}
 
 function _exportpush(argv: any) {
   return new Promise((resolve) => {
@@ -554,6 +603,7 @@ function _oldconfig(argv: any) {
 export const COMMANDS = [
   new Command("help", "display help", [], {}),
   new Command("", "", [], { help: "display help" }),
+  new Command("actualize", "actualize files", [], {}, _actualize),
   new Command("exportpush", "export git push commands", [], {}, _exportpush),
   new Command(
     "restart",
