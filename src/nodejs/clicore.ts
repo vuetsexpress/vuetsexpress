@@ -1,4 +1,4 @@
-import { GitHubAccountManager } from "./github";
+import { GitHubAccountManager, createGitlabRepo } from "./github";
 import { HerokuAppManager, APP_CONF } from "./heroku";
 import { randUserName } from "../shared/randusername";
 import { DEFAULT_REPO_NAME, gitUrl, SCRIPT_LINEFEED } from "../shared/config";
@@ -468,17 +468,23 @@ function _uploadapptargz(argv: any) {
 
 function _createforks(argv: any) {
   return new Promise(async (resolve) => {
+    const promises: any = [];
     for (const provider in PACKAGE_JSON.forks) {
-      if (provider === "github") {
-        Promise.all(
-          PACKAGE_JSON.forks[provider].map((owner: string) => {
+      promises.push(
+        PACKAGE_JSON.forks[provider].map((owner: string) => {
+          if (provider === "github") {
             gitMan.createRepo(owner);
-          })
-        ).then((result: any) => {
-          resolve(result);
-        });
-      }
+          } else {
+            createGitlabRepo(owner);
+          }
+        })
+      );
     }
+    Promise.all(promises.flat())
+      .then((result: any) => {
+        resolve(result);
+      })
+      .catch((error: any) => resolve({ error }));
   });
 }
 

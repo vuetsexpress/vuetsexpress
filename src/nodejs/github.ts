@@ -6,6 +6,7 @@ import { syslog } from "./utils";
 
 import { DEFAULT_REPO_OWNER } from "../shared/config";
 import { GIT_REPO_NAME } from "./config";
+import { Gitlab } from "@gitbeaker/node";
 
 ////////////////////////////////////////////////////////////////////////
 
@@ -14,6 +15,23 @@ const crypto = new Crypto();
 const MAX_COMMITS_PER_PAGE = 100;
 
 ////////////////////////////////////////////////////////////////////////
+
+export function createGitlabRepo(ownerOpt?: string, nameOpt?: string) {
+  const owner = ownerOpt || DEFAULT_REPO_OWNER;
+  const name = nameOpt || GIT_REPO_NAME;
+
+  const gl = new Gitlab({
+    token: CRYPTENV[`${owner.toUpperCase()}_GITLAB_TOKEN_FULL`],
+  });
+
+  return new Promise((resolve) => {
+    gl.Projects.create({ name })
+      .then((result: any) => {
+        resolve(result);
+      })
+      .catch((error: any) => resolve({ error }));
+  });
+}
 
 function getAllGitHubFullTokens() {
   const envTokenKeys = Object.keys(CRYPTENV).filter((key) =>
