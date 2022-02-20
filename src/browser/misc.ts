@@ -1,7 +1,13 @@
-import { h, reactive, ref } from "vue/dist/vue.esm-browser.prod";
+import {
+  h,
+  reactive,
+  ref,
+  defineComponent,
+} from "vue/dist/vue.esm-browser.prod";
 import { post } from "./api";
 import { JsonSerializable, User, Match, Seek } from "../shared/models";
 import { MAX_STORED_SEEKS, DEFAULT_APP_DISPLAY_NAME } from "../shared/config";
+import { min } from "lodash";
 
 ////////////////////////////////////////////////////////////
 
@@ -292,4 +298,161 @@ export function confirm(action: string, phrase: string) {
   window.alert(`Canceled ${action} .`);
 
   return false;
+}
+
+export const DIGIT_SEGMENTS = [
+  [1, 2, 3, 4, 5, 6],
+  [2, 3],
+  [1, 2, 7, 5, 4],
+  [1, 2, 7, 3, 4],
+  [6, 7, 2, 3],
+  [1, 6, 7, 3, 4],
+  [1, 6, 5, 4, 3, 7],
+  [1, 2, 3],
+  [1, 2, 3, 4, 5, 6, 7],
+  [1, 2, 7, 3, 6],
+];
+
+export class DigitalClock {
+  segments: any = {};
+
+  hasHours: boolean = false;
+  hasMinutes: boolean = false;
+
+  react = reactive({
+    digitColor: "#007",
+    backgroundColor: "#acd",
+    key: 0,
+  });
+
+  constructor() {
+    this.setTimeFunc();
+  }
+
+  setSegments(name: string, value: number, hasNonZero: boolean) {
+    const on = DIGIT_SEGMENTS[value];
+
+    this.segments[name] = [];
+
+    hasNonZero = hasNonZero || value !== 0;
+
+    for (let i = 0; i < 7; i++) {
+      this.segments[name][i] = hasNonZero ? on.includes(i + 1) : false;
+    }
+
+    return hasNonZero;
+  }
+
+  setSegmentsAll(name: string, value: number, hasNonZero: boolean) {
+    const valueLow = value % 10;
+    const valueHigh = (value - valueLow) / 10;
+
+    hasNonZero = this.setSegments(name + "HighSegments", valueHigh, hasNonZero);
+    hasNonZero = this.setSegments(name + "LowSegments", valueLow, hasNonZero);
+
+    return hasNonZero;
+  }
+
+  setTimeFunc(secondsOpt?: number, minutesOpt?: number, hoursOpt?: number) {
+    const seconds = secondsOpt === undefined ? 0 : secondsOpt;
+    const minutes = minutesOpt === undefined ? 0 : minutesOpt;
+    const hours = hoursOpt === undefined ? 0 : hoursOpt;
+
+    this.hasHours = hours > 0;
+    this.hasMinutes = minutes > 0;
+
+    let hasNonZero = this.setSegmentsAll("hours", hours, false);
+    hasNonZero = this.setSegmentsAll("minutes", minutes, hasNonZero);
+    this.setSegmentsAll("seconds", seconds, hasNonZero);
+
+    return hasNonZero;
+  }
+
+  setTime(secondsOpt?: number, minutesOpt?: number, hoursOpt?: number) {
+    this.setTimeFunc(secondsOpt, minutesOpt, hoursOpt);
+
+    this.react.key++;
+  }
+
+  makeSegments(name: string) {
+    const segments = [];
+
+    for (let i = 0; i < 7; i++) {
+      segments.push(
+        h("div", {
+          style: { background: this.react.digitColor },
+          class: { segment: true, on: this.segments[name][i] },
+        })
+      );
+    }
+
+    return segments;
+  }
+
+  renderFunction() {
+    return h(
+      "div",
+      {
+        key: this.react.key,
+        class: "clockcomp",
+        style: {
+          borderColor: this.react.digitColor,
+          backgroundColor: this.react.backgroundColor,
+        },
+      },
+      h("div", { class: "clock" }, [
+        h(
+          "div",
+          { class: ["digit", "hours"] },
+          this.makeSegments("hoursHighSegments")
+        ),
+        h(
+          "div",
+          { class: ["digit", "hours"] },
+          this.makeSegments("hoursLowSegments")
+        ),
+        h("div", {
+          class: ["separator"],
+          style: {
+            background: this.hasHours ? this.react.digitColor : "transparent",
+          },
+        }),
+        h(
+          "div",
+          { class: ["digit", "minutes"] },
+          this.makeSegments("minutesHighSegments")
+        ),
+        h(
+          "div",
+          { class: ["digit", "minutes"] },
+          this.makeSegments("minutesLowSegments")
+        ),
+        h("div", {
+          class: ["separator"],
+          style: {
+            background: this.hasMinutes ? this.react.digitColor : "transparent",
+          },
+        }),
+        h(
+          "div",
+          { class: ["digit", "seconds"] },
+          this.makeSegments("secondsHighSegments")
+        ),
+        h(
+          "div",
+          { class: ["digit", "seconds"] },
+          this.makeSegments("secondsLowSegments")
+        ),
+      ])
+    );
+  }
+
+  defineComponent() {
+    const self = this;
+    return defineComponent({
+      setup() {
+        return self.renderFunction.bind(self);
+      },
+    });
+  }
 }

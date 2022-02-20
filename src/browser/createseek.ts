@@ -22,6 +22,7 @@ import {
   globalReact,
   Labeled,
   remoteStorage,
+  DigitalClock,
 } from "./misc";
 import { post } from "./api";
 import { Board } from "./board";
@@ -270,12 +271,17 @@ export class CreateSeek {
 export type ShowMatchReact = {
   match: Match;
   currentGame: Game_;
+  clockScale: number;
 };
 
 export class ShowMatch {
+  topClock = new DigitalClock();
+  bottomClock = new DigitalClock();
+
   react: ShowMatchReact = reactive({
     match: new Match(),
     currentGame: Game(),
+    clockScale: 0.2,
   }) as ShowMatchReact;
 
   board: Board = new Board().setScale(0.55);
@@ -283,15 +289,15 @@ export class ShowMatch {
     return new ShowSeek(this.react.match.seek);
   }
 
-  constructor() {
-    console.log("match constructed");
-  }
+  constructor() {}
 
   setMatch(match: Match) {
     this.react.match = match;
     this.react.match.setSelectedGameChangedCallback(
       this.selectedGameChanged.bind(this)
     );
+    this.topClock.setTime(0, 3);
+    this.bottomClock.setTime(0, 3);
     return this;
   }
 
@@ -337,7 +343,15 @@ export class ShowMatch {
           centeredFlex(this.topPlayerRight())
         ),
         h("div", { class: "boardcont" }, h(this.board.defineComponent())),
-        h("div", { class: "topplayer" }, []),
+        h(
+          "div",
+          { class: "topplayer" },
+          centeredFlex(
+            h(this.topClock.defineComponent(), {
+              style: { transform: `scale(${this.react.clockScale})` },
+            })
+          )
+        ),
         h("div", { class: "games" }, []),
         h(
           "div",
@@ -345,7 +359,15 @@ export class ShowMatch {
           centeredFlex(h(this.showSeek().defineComponent()))
         ),
         h("div", { class: "controls" }, []),
-        h("div", { class: "bottomplayer" }, []),
+        h(
+          "div",
+          { class: "bottomplayer" },
+          centeredFlex(
+            h(this.bottomClock.defineComponent(), {
+              style: { transform: `scale(${this.react.clockScale})` },
+            })
+          )
+        ),
         h(
           "div",
           { class: "bottomplayername" },

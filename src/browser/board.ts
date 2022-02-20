@@ -254,6 +254,9 @@ export class Board {
             after: (orig: string, dest: string) => this.movePlayed(orig, dest),
           },
         },
+        animation: {
+          enabled: false,
+        },
       });
     } catch (err) {
       console.warn("could not create board");
