@@ -395,6 +395,10 @@ export class Match extends Serializable<Match> {
     this.selectGame();
   }
 
+  get started() {
+    return !this.games[0].empty;
+  }
+
   setSelectedGameChangedCallback(callback: any) {
     this.selectedGameChangedCallback = callback;
     this.selectedGameChangedCallback();

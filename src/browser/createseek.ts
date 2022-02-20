@@ -16,7 +16,13 @@ import {
   defineComponent,
   onMounted,
 } from "vue/dist/vue.esm-browser.prod";
-import { centeredFlex, globalReact, Labeled, remoteStorage } from "./misc";
+import {
+  alertError,
+  centeredFlex,
+  globalReact,
+  Labeled,
+  remoteStorage,
+} from "./misc";
 import { post } from "./api";
 import { Board } from "./board";
 import { Game, Game_ } from "../chessops";
@@ -296,6 +302,27 @@ export class ShowMatch {
     console.log("game", this.react.currentGame);
   }
 
+  get match() {
+    return this.react.match;
+  }
+
+  topPlayerRight() {
+    if (this.match.started) return undefined;
+
+    return h(
+      "button",
+      {
+        class: "red",
+        onClick: () => {
+          post("abortmatch", { id: this.match.id }).then((result: any) => {
+            alertError(result);
+          });
+        },
+      },
+      "Abort"
+    );
+  }
+
   renderFunction() {
     return h("div", { class: "showmatch" }, [
       h("div", { class: "grid" }, [
@@ -304,7 +331,11 @@ export class ShowMatch {
           { class: "topplayername" },
           centeredFlex(showUser(this.react.match.topPlayer(globalReact.user)))
         ),
-        h("div", { class: "topplayerright" }, []),
+        h(
+          "div",
+          { class: "topplayerright" },
+          centeredFlex(this.topPlayerRight())
+        ),
         h("div", { class: "boardcont" }, h(this.board.defineComponent())),
         h("div", { class: "topplayer" }, []),
         h("div", { class: "games" }, []),

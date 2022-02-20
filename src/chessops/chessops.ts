@@ -393,6 +393,10 @@ export class Game_ {
     this.fromProps({});
   }
 
+  get empty() {
+    return Object.keys(this.nodes).length <= 1;
+  }
+
   mergeGame(g: Game_) {
     this.toBegin();
     g.toBegin();

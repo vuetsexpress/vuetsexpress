@@ -211,6 +211,30 @@ export class Chess {
       }
     });
 
+    this.api.postAuth("/abortmatch", async (req: any, res: any) => {
+      const { id } = req.body;
+
+      console.log({ abortMatch: req.body });
+
+      const matchDoc = this.matchesColl.getDocByIdLocalSync(id);
+
+      if (matchDoc) {
+        const match = new Match(matchDoc);
+
+        if (match.hasUser(req.user)) {
+          const delResult = await this.matchesColl.deleteOneById(id);
+
+          res.json({ delResult });
+
+          this.sendMatches();
+        } else {
+          res.json({ error: "not authorized to abort this match" });
+        }
+      } else {
+        res.json({ error: "no such match" });
+      }
+    });
+
     this.api.postAuth("/storeanalysis", (req: any, res: any) => {
       const id = req.user.id;
 
