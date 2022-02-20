@@ -374,6 +374,9 @@ export const POSSIBLE_GAME_RESULTS = [-1, 0, 1] as const;
 export type GameResult = typeof POSSIBLE_GAME_RESULTS[number];
 export const DEFAULT_GAME_RESULT: GameResult = 0;
 
+export const WHITE = 0;
+export const BLACK = 1;
+
 export class Game_ {
   variant: Variant;
   pos: Pos_;

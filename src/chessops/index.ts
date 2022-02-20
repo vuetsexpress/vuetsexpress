@@ -28,6 +28,8 @@ import {
   GameNode,
   chessgroundDests,
   guessChessopsVariant,
+  WHITE,
+  BLACK,
 } from "./chessops";
 
 export {
@@ -46,6 +48,8 @@ export {
   GameNode,
   chessgroundDests,
   guessChessopsVariant,
+  WHITE,
+  BLACK,
 };
 
 import type {

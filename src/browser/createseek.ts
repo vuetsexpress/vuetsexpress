@@ -16,7 +16,7 @@ import {
   defineComponent,
   onMounted,
 } from "vue/dist/vue.esm-browser.prod";
-import { Labeled, remoteStorage } from "./misc";
+import { centeredFlex, globalReact, Labeled, remoteStorage } from "./misc";
 import { post } from "./api";
 import { Board } from "./board";
 
@@ -278,7 +278,11 @@ export class ShowMatch {
   renderFunction() {
     return h("div", { class: "showmatch" }, [
       h("div", { class: "grid" }, [
-        h("div", { class: "topplayername" }, []),
+        h(
+          "div",
+          { class: "topplayername" },
+          centeredFlex(showUser(this.react.match.topPlayer(globalReact.user)))
+        ),
         h("div", { class: "topplayerright" }, []),
         h(
           "div",
@@ -290,7 +294,13 @@ export class ShowMatch {
         h("div", { class: "middle" }, []),
         h("div", { class: "controls" }, []),
         h("div", { class: "bottomplayer" }, []),
-        h("div", { class: "bottomplayername" }, []),
+        h(
+          "div",
+          { class: "bottomplayername" },
+          centeredFlex(
+            showUser(this.react.match.bottomPlayer(globalReact.user))
+          )
+        ),
         h("div", { class: "bottomplayerright" }, []),
       ]),
     ]);

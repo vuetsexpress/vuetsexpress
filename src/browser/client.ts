@@ -491,7 +491,7 @@ const contentRightBottomMatches = () => {
       new ShowSeek(m.seek)
         .setOnClick((s: Seek, ev: any) => {
           ev.stopPropagation();
-          // TODO
+          matchComp.react.match = m;
         })
         .defineComponent(),
       {

@@ -12,7 +12,7 @@ import {
   DEFAULT_APP_NAME_DEFAULT,
   DEFAULT_TARGZ_URL,
 } from "../shared/config";
-import { Game_, Game } from "../chessops/index";
+import { Game_, Game, WHITE, BLACK } from "../chessops/index";
 
 //////////////////////////////////////////////////////////
 
@@ -390,6 +390,53 @@ export class Match extends Serializable<Match> {
   constructor(blob?: Blob) {
     super("match");
     this.deserialize(blob);
+  }
+
+  get user() {
+    return this.seek.user;
+  }
+
+  get acceptor() {
+    return this.seek.acceptor;
+  }
+
+  get currentGame() {
+    return this.games[this.round];
+  }
+
+  opponentOf(user: User): User | undefined {
+    if (this.hasUser(user)) {
+      if (this.user.sameIdAs(user)) {
+        return this.acceptor;
+      } else {
+        return this.user;
+      }
+    } else {
+      return undefined;
+    }
+  }
+
+  gameForRound(round?: number) {
+    if (round === undefined) return this.currentGame;
+    return this.games[round];
+  }
+
+  topPlayer(me: User, round?: number): User {
+    const opponent = this.opponentOf(me);
+    if (opponent === undefined) {
+      return this.gameForRound(round).players[BLACK];
+    } else {
+      return opponent;
+    }
+  }
+
+  bottomPlayer(me: User, round?: number): User {
+    const opponent = this.opponentOf(me);
+    if (opponent === undefined) {
+      return this.gameForRound(round).players[WHITE];
+    } else {
+      return me;
+    }
   }
 
   hasUser(user: User) {
