@@ -386,10 +386,39 @@ export class Match extends Serializable<Match> {
   round: number = 1;
   games: Game_[] = Array(DEFAULT_ROUNDS).fill(Game());
   terminated: boolean = false;
+  selected: number | undefined = undefined;
+  selectedGameChangedCallback: any = () => {};
 
   constructor(blob?: Blob) {
     super("match");
     this.deserialize(blob);
+    this.selectGame();
+  }
+
+  setSelectedGameChangedCallback(callback: any) {
+    this.selectedGameChangedCallback = callback;
+    this.selectedGameChangedCallback();
+    return this;
+  }
+
+  get rounds() {
+    return this.seek.rounds;
+  }
+
+  setSeek(seek: Seek) {
+    this.seek = seek;
+    for (let round = 0; round < this.rounds; round++) {
+      const game = Game().setVariant(this.seek.variant.chessopsKey, undefined);
+      if (round % 2 == 0) {
+        game.players[WHITE] = this.user;
+        game.players[BLACK] = this.acceptor as User;
+      } else {
+        game.players[BLACK] = this.user;
+        game.players[WHITE] = this.acceptor as User;
+      }
+      this.games[round] = game;
+    }
+    return this;
   }
 
   get user() {
@@ -400,8 +429,21 @@ export class Match extends Serializable<Match> {
     return this.seek.acceptor;
   }
 
-  get currentGame() {
+  get currentGame(): Game_ {
     return this.games[this.round];
+  }
+
+  get selectedGame(): Game_ {
+    if (this.selected === undefined) {
+      return this.currentGame;
+    }
+
+    return this.games[this.selected];
+  }
+
+  selectGame(selected?: number) {
+    this.selected = selected;
+    this.selectedGameChangedCallback();
   }
 
   opponentOf(user: User): User | undefined {
@@ -413,6 +455,19 @@ export class Match extends Serializable<Match> {
       }
     } else {
       return undefined;
+    }
+  }
+
+  shouldFlip(me: User) {
+    const opponent = this.opponentOf(me);
+    if (opponent === undefined) {
+      return false;
+    } else {
+      if (this.user.sameIdAs(me)) {
+        return false;
+      } else {
+        return true;
+      }
     }
   }
 

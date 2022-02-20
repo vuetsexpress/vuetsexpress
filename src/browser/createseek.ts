@@ -19,6 +19,7 @@ import {
 import { centeredFlex, globalReact, Labeled, remoteStorage } from "./misc";
 import { post } from "./api";
 import { Board } from "./board";
+import { Game, Game_ } from "../chessops";
 
 ///////////////////////////////////////////////////////////////////////////
 
@@ -262,17 +263,35 @@ export class CreateSeek {
 
 export type ShowMatchReact = {
   match: Match;
+  currentGame: Game_;
 };
 
 export class ShowMatch {
   react: ShowMatchReact = reactive({
     match: new Match(),
+    currentGame: Game(),
   }) as ShowMatchReact;
 
   board: Board = new Board().setScale(0.55);
+  showSeek() {
+    return new ShowSeek(this.react.match.seek);
+  }
 
-  constructor(match?: Match) {
-    this.react.match = match || this.react.match;
+  constructor() {}
+
+  setMatch(match: Match) {
+    this.react.match = match;
+    this.react.match.setSelectedGameChangedCallback(
+      this.selectedGameChanged.bind(this)
+    );
+    return this;
+  }
+
+  selectedGameChanged() {
+    this.react.currentGame = this.react.match.selectedGame;
+    this.board.setGame(this.react.currentGame);
+    this.board.setFlip(this.react.match.shouldFlip(globalReact.user));
+    console.log("game", this.react.currentGame);
   }
 
   renderFunction() {
@@ -291,7 +310,11 @@ export class ShowMatch {
         ),
         h("div", { class: "topplayer" }, []),
         h("div", { class: "games" }, []),
-        h("div", { class: "middle" }, []),
+        h(
+          "div",
+          { class: "middle" },
+          centeredFlex(h(this.showSeek().defineComponent()))
+        ),
         h("div", { class: "controls" }, []),
         h("div", { class: "bottomplayer" }, []),
         h(

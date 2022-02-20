@@ -491,7 +491,8 @@ const contentRightBottomMatches = () => {
       new ShowSeek(m.seek)
         .setOnClick((s: Seek, ev: any) => {
           ev.stopPropagation();
-          matchComp.react.match = m;
+          matchComp.setMatch(m);
+          tabs.selectTabById("match");
         })
         .defineComponent(),
       {

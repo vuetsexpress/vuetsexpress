@@ -153,8 +153,7 @@ export class Chess {
           return;
         }
         seek.acceptor = user;
-        const match = new Match();
-        match.seek = seek;
+        const match = new Match().setSeek(seek);
         const blob = match.serialize();
         const createMatchResult = await this.matchesColl.setDocById(
           match.id,

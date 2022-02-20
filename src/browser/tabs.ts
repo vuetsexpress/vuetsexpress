@@ -19,6 +19,11 @@ export class Tabs {
     this.id = id;
     this.tabs = tabs;
   }
+
+  selectTabById(id: string) {
+    remoteStorage.setSelectedTabId(this.id, id);
+  }
+
   get selectedTabStorageId() {
     return "selectedtabid/" + this.id;
   }
@@ -53,7 +58,7 @@ export class Tabs {
                     border: "none !important",
                   },
                   onClick: (ev: any) => {
-                    remoteStorage.setSelectedTabId(this.id, tab.id);
+                    this.selectTabById(tab.id);
                   },
                 },
                 h("div", {
@@ -68,7 +73,7 @@ export class Tabs {
                     selected: this.effSelectedTabId() === tab.id,
                   },
                   onClick: (ev: any) => {
-                    remoteStorage.setSelectedTabId(this.id, tab.id);
+                    this.selectTabById(tab.id);
                   },
                 },
                 tab.caption

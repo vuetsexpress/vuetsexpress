@@ -10,7 +10,7 @@ import {
 import { Chessground } from "@publishvue/chessground";
 import { px } from "./misc";
 import { uid, typDeb, shortDeb } from "../shared/utils";
-import { Game } from "../chessops";
+import { Game, Game_ } from "../chessops";
 import { post } from "./api";
 import _ from "lodash";
 import { CHESSOPS_VARIANT_KEY, ALLOWED_VARIANTS } from "../shared/models";
@@ -21,6 +21,7 @@ import { DEFAULT_VARIANT_KEY } from "../shared/config";
 export class Board {
   id = uid();
   board: any;
+  flip: boolean = false;
   react = reactive({
     size: 360,
     scale: 0.6,
@@ -31,6 +32,19 @@ export class Board {
   innerConteinerRef = ref(0);
 
   constructor() {}
+
+  setFlip(flip: boolean) {
+    this.flip = flip;
+
+    this.setUp();
+
+    return this;
+  }
+
+  setGame(game: Game_) {
+    this.react.game = game;
+    return this;
+  }
 
   setScale(scale: number) {
     this.react.scale = scale;
@@ -229,6 +243,10 @@ export class Board {
             after: (orig: string, dest: string) => this.movePlayed(orig, dest),
           },
         },
+      });
+
+      this.board.set({
+        orientation: this.flip ? "black" : "white",
       });
     } catch (err) {
       console.warn("could not create board");

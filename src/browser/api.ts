@@ -6,8 +6,8 @@ const API_BASE_URL = "/api";
 
 const LOGGING_DISABLED_ENDPOINTS = [
   "timestamp",
-  //"setremotestorage",
-  //"getremotestorage",
+  "setremotestorage",
+  "getremotestorage",
   "login",
   "getglobalconfig",
   "getanalysis",
@@ -17,6 +17,7 @@ const LOGGING_DISABLED_ENDPOINTS = [
   "getchat",
   "events/ping",
   "storeanalysis",
+  "getmatches",
 ];
 
 ////////////////////////////////////////////////////////////////
