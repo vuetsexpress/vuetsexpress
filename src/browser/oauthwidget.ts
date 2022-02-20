@@ -56,7 +56,7 @@ export default defineComponent({
           react.admin = true;
           globalReact.isAdmin = true;
         }
-        props.logger.log({ admin: !!react.admin }, "oauthwidgetcheckadmin");
+        //props.logger.log({ admin: !!react.admin }, "oauthwidgetcheckadmin");
       });
     }
 
@@ -75,7 +75,7 @@ export default defineComponent({
             localStorage.setItem("USER_TOKEN", user.token);
 
             if (firstLogin) {
-              props.logger.log({ login: user.serialize() }, "oauthwidgetlogin");
+              //props.logger.log({ login: user.serialize() }, "oauthwidgetlogin");
               if (props.onLogin) {
                 props.onLogin();
               }

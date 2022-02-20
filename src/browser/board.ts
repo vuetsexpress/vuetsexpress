@@ -30,8 +30,14 @@ export class Board {
   });
   debouncerUpload = typDeb(this.upload.bind(this));
   innerConteinerRef = ref(0);
+  shouldUpload: boolean = false;
 
   constructor() {}
+
+  setShouldUpload(shouldUpload: boolean) {
+    this.shouldUpload = shouldUpload;
+    return this;
+  }
 
   setFlip(flip: boolean) {
     this.flip = flip;
@@ -57,6 +63,11 @@ export class Board {
   }
 
   upload() {
+    if (!this.shouldUpload) {
+      this.react.uploadPending = false;
+      return;
+    }
+
     post("storeanalysis", { game: this.react.game.serialize() }).then(
       (result: any) => {
         if (result.error) {
@@ -244,10 +255,6 @@ export class Board {
           },
         },
       });
-
-      this.board.set({
-        orientation: this.flip ? "black" : "white",
-      });
     } catch (err) {
       console.warn("could not create board");
     }
@@ -264,9 +271,17 @@ export class Board {
   }
 
   setUp(skipUpload?: boolean) {
-    this.board.set({ fen: this.react.game.reportFen() });
+    try {
+      this.board.set({ fen: this.react.game.reportFen() });
 
-    this.highlightMove(this.react.game.current.genUci);
+      this.board.set({
+        orientation: this.flip ? "black" : "white",
+      });
+
+      this.highlightMove(this.react.game.current.genUci);
+    } catch (err) {
+      console.warn("board setup failed");
+    }
 
     if (!skipUpload) this.debounceUpload();
   }
@@ -282,6 +297,10 @@ export class Board {
   }
 
   getAnalysis() {
+    if (!this.shouldUpload) {
+      return;
+    }
+
     post("getanalysis", {}).then((result: any) => {
       if (result.error) {
         //window.alert(result.error);

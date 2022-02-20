@@ -277,7 +277,9 @@ export class ShowMatch {
     return new ShowSeek(this.react.match.seek);
   }
 
-  constructor() {}
+  constructor() {
+    console.log("match constructed");
+  }
 
   setMatch(match: Match) {
     this.react.match = match;
@@ -288,7 +290,7 @@ export class ShowMatch {
   }
 
   selectedGameChanged() {
-    this.react.currentGame = this.react.match.selectedGame;
+    this.react.currentGame = this.react.match.selectedGame.clone();
     this.board.setGame(this.react.currentGame);
     this.board.setFlip(this.react.match.shouldFlip(globalReact.user));
     console.log("game", this.react.currentGame);
@@ -303,11 +305,7 @@ export class ShowMatch {
           centeredFlex(showUser(this.react.match.topPlayer(globalReact.user)))
         ),
         h("div", { class: "topplayerright" }, []),
-        h(
-          "div",
-          { class: "boardcont" },
-          h(this.board.defineComponent(), {}, [])
-        ),
+        h("div", { class: "boardcont" }, h(this.board.defineComponent())),
         h("div", { class: "topplayer" }, []),
         h("div", { class: "games" }, []),
         h(

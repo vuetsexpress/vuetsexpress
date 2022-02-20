@@ -73,7 +73,7 @@ export class EventConsumer {
     this.source = new EventSource(this.endPointUrl());
 
     this.source.onopen = () => {
-      this.logger.log({ sourceOpened: this.id }, this.name);
+      //this.logger.log({ sourceOpened: this.id }, this.name);
 
       this.lastTick = Date.now();
     };

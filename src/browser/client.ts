@@ -85,7 +85,11 @@ export function delSeek(s: Seek, ev: any) {
 new EventConsumer({
   logger: logger.logger,
   logFilter: (ev: any) => {
-    if (["tick", "setpingdelay", "seeks", "activeusers"].includes(ev.kind))
+    if (
+      ["tick", "setpingdelay", "seeks", "activeusers", "announce"].includes(
+        ev.kind
+      )
+    )
       return false;
     return true;
   },
@@ -140,7 +144,7 @@ const tabs = new Tabs("contentmiddle", [
 
 //////////////////////////////////////////////////////////////////////
 
-const analysisBoard = new Board();
+const analysisBoard = new Board().setShouldUpload(true);
 const analysisBoardComp = h(analysisBoard.defineComponent());
 
 const analysisboard = h(
@@ -491,6 +495,7 @@ const contentRightBottomMatches = () => {
       new ShowSeek(m.seek)
         .setOnClick((s: Seek, ev: any) => {
           ev.stopPropagation();
+          console.log("set match", m);
           matchComp.setMatch(m);
           tabs.selectTabById("match");
         })
