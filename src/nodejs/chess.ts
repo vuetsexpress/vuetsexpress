@@ -129,37 +129,48 @@ export class Chess {
     const existingSeek = this.seeksColl.getDocByIdLocalSync(seek.id);
 
     if (existingSeek) {
-      const delResult = await this.seeksColl.deleteOneById(seek.id);
-
       if (existingSeek.user.id === user.id) {
+        const delResult = await this.seeksColl.deleteOneById(seek.id);
+
         res.json({ seekId: seek.id, delResult });
+
         this.sendSeeks();
       } else {
         const seek = new Seek(existingSeek);
+
         const userMatches = this.getAllMatchesByUserOrAcceptorId(user.id);
-        if (userMatches.length > MAX_MATCHES_PER_USER) {
+        if (userMatches.length >= MAX_MATCHES_PER_USER) {
           res.json({
             error: `Exceeded max matches per user quota ${MAX_MATCHES_PER_USER} .`,
           });
           return;
         }
+
         const seekUserMatches = this.getAllMatchesByUserOrAcceptorId(
           seek.user.id
         );
-        if (seekUserMatches.length > MAX_MATCHES_PER_USER) {
+        if (seekUserMatches.length >= MAX_MATCHES_PER_USER) {
           res.json({
             error: `Exceeded max matches per seek creator quota ${MAX_MATCHES_PER_USER} .`,
           });
           return;
         }
+
         seek.acceptor = user;
+
         const match = new Match().setSeek(seek);
+
         const blob = match.serialize();
+
         const createMatchResult = await this.matchesColl.setDocById(
           match.id,
           blob
         );
+
+        const delResult = await this.seeksColl.deleteOneById(seek.id);
+
         res.json({ seekId: seek.id, delResult, createMatchResult });
+
         this.sendSeeks();
         this.sendMatches();
       }
