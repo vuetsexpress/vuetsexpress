@@ -26,7 +26,7 @@ import { WebLogger } from "./logger";
 import { DEFAULT_REPO_URL, CHAT_MESSAGE_MAX_LENGTH } from "../shared/config";
 import { Board } from "./board";
 import { randomQuote } from "../shared/quotes";
-import { CreateSeek, ShowSeek, showUser } from "./createseek";
+import { CreateSeek, ShowSeek, showUser, ShowMatch } from "./createseek";
 import { Seek, Match } from "../shared/models";
 import { headSort } from "../shared/utils";
 
@@ -133,6 +133,7 @@ const tabs = new Tabs("contentmiddle", [
     iconbutton: "iconbutton2",
   },
   { caption: "Seek", id: "createseek" },
+  { caption: "Match", id: "match" },
   { caption: "Config", id: "config", adminOnly: true },
   { caption: "Logs", id: "logs", adminOnly: true },
 ]);
@@ -259,6 +260,9 @@ const profile = () =>
 const createSeek = new CreateSeek();
 const createseek = h(createSeek.defineComponent());
 
+const matchComp = new ShowMatch();
+const match = centeredFlex(h(matchComp.defineComponent()));
+
 const conf = new ConfigNode("config");
 const config = h(conf.defineComponent(), {
   onUpload: (ev: any) => {
@@ -296,6 +300,7 @@ const contentMiddleDispatch = {
   analysisboard,
   profile,
   createseek,
+  match,
   config,
   logs,
 };
@@ -422,7 +427,9 @@ const contentLeftBottom = () => [
 ];
 
 const contentMiddle = () =>
-  ["logs", "createseek", "config", "profile"].includes(tabs.effSelectedTabId())
+  ["logs", "createseek", "match", "config", "profile"].includes(
+    tabs.effSelectedTabId()
+  )
     ? typeof (contentMiddleDispatch as any)[tabs.effSelectedTabId()] !==
       "function"
       ? (contentMiddleDispatch as any)[tabs.effSelectedTabId()]

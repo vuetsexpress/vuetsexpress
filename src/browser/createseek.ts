@@ -8,11 +8,17 @@ import {
   ALLOWED_ROUNDS,
   DEFAULT_ROUNDS,
 } from "../shared/config";
-import { ALLOWED_VARIANTS, Seek, User, Variant } from "../shared/models";
+import { ALLOWED_VARIANTS, Seek, User, Variant, Match } from "../shared/models";
 
-import { h, reactive, defineComponent } from "vue/dist/vue.esm-browser.prod";
+import {
+  h,
+  reactive,
+  defineComponent,
+  onMounted,
+} from "vue/dist/vue.esm-browser.prod";
 import { Labeled, remoteStorage } from "./misc";
 import { post } from "./api";
+import { Board } from "./board";
 
 ///////////////////////////////////////////////////////////////////////////
 
@@ -248,6 +254,54 @@ export class CreateSeek {
     const self = this;
     return defineComponent({
       setup() {
+        return self.renderFunction.bind(self);
+      },
+    });
+  }
+}
+
+export type ShowMatchReact = {
+  match: Match;
+};
+
+export class ShowMatch {
+  react: ShowMatchReact = reactive({
+    match: new Match(),
+  }) as ShowMatchReact;
+
+  board: Board = new Board().setScale(0.55);
+
+  constructor(match?: Match) {
+    this.react.match = match || this.react.match;
+  }
+
+  renderFunction() {
+    return h("div", { class: "showmatch" }, [
+      h("div", { class: "grid" }, [
+        h("div", { class: "topplayername" }, []),
+        h("div", { class: "topplayerright" }, []),
+        h(
+          "div",
+          { class: "boardcont" },
+          h(this.board.defineComponent(), {}, [])
+        ),
+        h("div", { class: "topplayer" }, []),
+        h("div", { class: "games" }, []),
+        h("div", { class: "middle" }, []),
+        h("div", { class: "controls" }, []),
+        h("div", { class: "bottomplayer" }, []),
+        h("div", { class: "bottomplayername" }, []),
+        h("div", { class: "bottomplayerright" }, []),
+      ]),
+    ]);
+  }
+
+  defineComponent() {
+    const self = this;
+    return defineComponent({
+      setup() {
+        onMounted(() => {});
+
         return self.renderFunction.bind(self);
       },
     });

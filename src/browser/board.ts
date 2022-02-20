@@ -23,6 +23,7 @@ export class Board {
   board: any;
   react = reactive({
     size: 360,
+    scale: 0.6,
     game: Game().setVariant(DEFAULT_VARIANT_KEY, undefined),
     uploadPending: true,
   });
@@ -30,6 +31,11 @@ export class Board {
   innerConteinerRef = ref(0);
 
   constructor() {}
+
+  setScale(scale: number) {
+    this.react.scale = scale;
+    return this;
+  }
 
   debounceUpload() {
     this.debouncerUpload();
@@ -248,7 +254,9 @@ export class Board {
   }
 
   onResize() {
-    this.react.size = Math.floor((window.innerHeight - 220) / 8) * 8;
+    const size = Math.floor((window.innerHeight * this.react.scale) / 8) * 8;
+
+    this.react.size = size;
 
     this.makeBoard();
 

@@ -2,6 +2,96 @@
 
 $seekbckg: #ffa !important;
 
+@mixin matchdiv {
+  background-color: #7d8;
+}
+
+@mixin playerright {
+  @include matchdiv;
+}
+
+$playerheight: 50px;
+$gamesheight: 50px;
+$controlsheight: 50px;
+$playernameheight: 30px;
+$matchgap: 2px;
+$totalmatchcontrolsheight: calc(
+  $playerheight * 2 + $gamesheight + $controlsheight + 4 * $matchgap
+);
+$controlswidth: 240px;
+$matchsize: 60vh;
+$boardcontwidth: calc($matchsize - 30px);
+$totalmatchwidth: calc($boardcontwidth + $matchgap + $controlswidth);
+$totalmatchmiddleheight: calc($matchsize - $totalmatchcontrolsheight);
+$totalmatchheight: calc($matchsize + 2 * $playernameheight + 2 * $matchgap);
+$matchgapcolor: #379;
+
+.showmatch {
+  border: solid $matchgap $matchgapcolor;
+  .grid {
+    background-color: $matchgapcolor;
+    width: $totalmatchwidth;
+    height: $totalmatchheight;
+    display: grid;
+    grid-gap: $matchgap;
+    grid-template-columns: $boardcontwidth $controlswidth;
+    grid-template-rows: $playernameheight $playerheight $gamesheight $totalmatchmiddleheight $controlsheight $playerheight $playernameheight;
+    .boardcont {
+      @include matchdiv;
+      @include misc.centerflex;
+      grid-column: 1;
+      grid-row: 2 / 7;
+    }
+    .topplayername {
+      @include matchdiv;
+      grid-column: 1;
+      grid-row: 1;
+    }
+    .topplayerright {
+      @include matchdiv;
+      @include playerright;
+      grid-column: 2;
+      grid-row: 1;
+    }
+    .topplayer {
+      @include matchdiv;
+      grid-column: 2;
+      grid-row: 2;
+    }
+    .games {
+      @include matchdiv;
+      grid-column: 2;
+      grid-row: 3;
+    }
+    .middle {
+      @include matchdiv;
+      grid-column: 2;
+      grid-row: 4;
+    }
+    .controls {
+      @include matchdiv;
+      grid-column: 2;
+      grid-row: 5;
+    }
+    .bottomplayer {
+      @include matchdiv;
+      grid-column: 2;
+      grid-row: 6;
+    }
+    .bottomplayername {
+      @include matchdiv;
+      grid-column: 1;
+      grid-row: 7;
+    }
+    .bottomplayerright {
+      @include matchdiv;
+      @include playerright;
+      grid-column: 2;
+      grid-row: 7;
+    }
+  }
+}
+
 .showuser {
   display: inline-block;
   padding: 0px !important;
