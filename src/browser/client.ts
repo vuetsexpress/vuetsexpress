@@ -166,6 +166,7 @@ const analysisboard = h(
 );
 
 const q = new QuartzDigit();
+const qc = q.defineComponent();
 const qr = reactive({ number: 0 });
 for (let i = 0; i < 10; i++) {
   setTimeout(() => {
@@ -215,7 +216,7 @@ const profile = () =>
         globalReact.revealToken ? "Hide Token" : "Reveal Token"
       ),
       h("hr"),
-      h(q.defineComponent(), { number: qr.number }),
+      h(qc, { number: qr.number }),
       h("hr"),
       globalReact.revealToken
         ? [

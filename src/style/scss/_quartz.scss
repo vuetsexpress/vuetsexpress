@@ -4,8 +4,12 @@ $horizsegwidth: 100px;
 $horizsegheight: 20px;
 $totalwidth: calc($horizsegwidth + 2 * $vertsegwidth);
 $totalheight: calc(2 * $vertsegheight + 3 * $horizsegheight);
+$segradius: calc(($vertsegwidth + $horizsegwidth) / 4);
 
 @mixin generaldigit {
+  transition: all 1s;
+  border: solid 1px transparent;
+  border-radius: $segradius;
 }
 
 .quartzdigit {

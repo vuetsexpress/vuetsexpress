@@ -1,6 +1,8 @@
 // class component
 
 import {
+  ref,
+  onMounted,
   watchEffect,
   h,
   reactive,
@@ -19,17 +21,18 @@ export const QUARTZ_SEGMENTS = [
 
 export type QuartzSegment = typeof QUARTZ_SEGMENTS[number];
 
+export const QUARTZ_DIGIT_SEGMENTS = {
+  top: [0, 2, 3, 5, 6, 7, 8, 9],
+  rightupper: [0, 1, 2, 3, 7, 8, 9],
+  rightlower: [0, 1, 3, 4, 5, 6, 7, 8, 9],
+  bottom: [0, 2, 3, 5, 6, 8, 9],
+  leftlower: [0, 2, 6, 8],
+  leftupper: [0, 4, 5, 6, 8, 9],
+  middle: [2, 3, 4, 5, 6, 8, 9],
+};
+
 export class QuartzDigit {
-  react = reactive({
-    number: 0,
-    top: false,
-    rightupper: false,
-    rightlower: false,
-    bottom: false,
-    leftlower: false,
-    leftupper: false,
-    middle: false,
-  });
+  refs: any = {};
 
   constructor() {}
 
@@ -40,28 +43,32 @@ export class QuartzDigit {
       h(
         "div",
         { class: "grid" },
-        QUARTZ_SEGMENTS.map((seg: string) =>
-          h("div", {
-            style: { backgroundColor: this.react[seg] ? "#f00" : "#eee" },
+        QUARTZ_SEGMENTS.map((seg: string) => {
+          return h("div", {
+            ref: this.refs[seg],
             class: [seg],
-          })
-        )
+          });
+        })
       )
     );
   }
 
-  calcReactFromNumber(number: number) {
-    this.react.top = [0, 2, 3, 5, 6, 7, 8, 9].includes(number);
-    this.react.rightupper = [0, 1, 2, 3, 7, 8, 9].includes(number);
-    this.react.rightlower = [0, 1, 3, 4, 5, 6, 7, 8, 9].includes(number);
-    this.react.bottom = [0, 2, 3, 5, 6, 8, 9].includes(number);
-    this.react.leftlower = [0, 2, 6, 8].includes(number);
-    this.react.leftupper = [0, 4, 5, 6, 8, 9].includes(number);
-    this.react.middle = [2, 3, 4, 5, 6, 8, 9].includes(number);
+  build(number: number) {
+    let i = 1;
+    for (let seg of QUARTZ_SEGMENTS) {
+      const ref = this.refs[seg];
+      const el = ref._rawValue;
+      const st = el.style;
+      const hasSeg = QUARTZ_DIGIT_SEGMENTS[seg].includes(number);
+      setTimeout(() => {
+        st.backgroundColor = hasSeg ? "#f00" : "#ddd";
+      }, 100 * i++);
+    }
   }
 
   defineComponent() {
     const self = this;
+
     return defineComponent({
       props: {
         number: {
@@ -70,10 +77,15 @@ export class QuartzDigit {
         },
       },
       setup(props: any) {
-        watchEffect(() => {
-          const number = props.number;
-          self.calcReactFromNumber(number);
+        QUARTZ_SEGMENTS.forEach((seg) => (self.refs[seg] = ref(0)));
+
+        onMounted(() => {
+          watchEffect(() => {
+            const number = props.number;
+            self.build(number);
+          });
         });
+
         return self.renderFunction.bind(self);
       },
     });
