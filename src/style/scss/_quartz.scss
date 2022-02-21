@@ -1,28 +1,14 @@
-$vertsegwidth: 20px;
-$vertsegheight: 100px;
-$horizsegwidth: 100px;
-$horizsegheight: 20px;
-$totalwidth: calc($horizsegwidth + 2 * $vertsegwidth);
-$totalheight: calc(2 * $vertsegheight + 3 * $horizsegheight);
-$segradius: calc(($vertsegwidth + $horizsegwidth) / 4);
-
 @mixin generaldigit {
-  transition: all 1s;
   border: solid 1px transparent;
-  border-radius: $segradius;
 }
 
 .quartzdigit {
   display: inline-block;
 
   .grid {
-    max-width: $totalwidth !important;
-    max-height: $totalheight !important;
     grid-gap: 0px;
     display: grid;
-    grid-template-columns: $vertsegwidth $horizsegwidth $vertsegwidth;
-    grid-template-rows: $horizsegheight $vertsegheight $horizsegheight $vertsegheight $horizsegheight;
-    background-color: #aaa;
+    background-color: inherit !important;
     .top {
       grid-row: 1;
       grid-column: 2;
