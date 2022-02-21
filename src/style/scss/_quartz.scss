@@ -1,0 +1,65 @@
+$vertsegwidth: 20px;
+$vertsegheight: 100px;
+$horizsegwidth: 100px;
+$horizsegheight: 20px;
+$totalwidth: calc($horizsegwidth + 2 * $vertsegwidth);
+$totalheight: calc(2 * $vertsegheight + 3 * $horizsegheight);
+
+@mixin generaldigit {
+}
+
+.quartzdigit {
+  display: inline-block;
+
+  .grid {
+    max-width: $totalwidth !important;
+    max-height: $totalheight !important;
+    grid-gap: 0px;
+    display: grid;
+    grid-template-columns: $vertsegwidth $horizsegwidth $vertsegwidth;
+    grid-template-rows: $horizsegheight $vertsegheight $horizsegheight $vertsegheight $horizsegheight;
+    background-color: #aaa;
+    .top {
+      grid-row: 1;
+      grid-column: 2;
+
+      @include generaldigit;
+    }
+    .rightupper {
+      grid-row: 2;
+      grid-column: 3;
+
+      @include generaldigit;
+    }
+    .rightlower {
+      grid-row: 4;
+      grid-column: 3;
+
+      @include generaldigit;
+    }
+    .bottom {
+      grid-row: 5;
+      grid-column: 2;
+
+      @include generaldigit;
+    }
+    .leftlower {
+      grid-row: 4;
+      grid-column: 1;
+
+      @include generaldigit;
+    }
+    .leftupper {
+      grid-row: 2;
+      grid-column: 1;
+
+      @include generaldigit;
+    }
+    .middle {
+      grid-row: 3;
+      grid-column: 2;
+
+      @include generaldigit;
+    }
+  }
+}

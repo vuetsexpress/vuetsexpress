@@ -29,6 +29,7 @@ import { randomQuote } from "../shared/quotes";
 import { CreateSeek, ShowSeek, showUser, ShowMatch } from "./createseek";
 import { Seek, Match } from "../shared/models";
 import { headSort } from "../shared/utils";
+import { QuartzDigit } from "./quartz";
 
 //////////////////////////////////////////////////////////////////////
 
@@ -164,6 +165,14 @@ const analysisboard = h(
   analysisBoardComp
 );
 
+const q = new QuartzDigit();
+const qr = reactive({ number: 0 });
+for (let i = 0; i < 10; i++) {
+  setTimeout(() => {
+    qr.number = i;
+  }, i * 3000);
+}
+
 const profile = () =>
   h(
     "div",
@@ -205,6 +214,8 @@ const profile = () =>
         },
         globalReact.revealToken ? "Hide Token" : "Reveal Token"
       ),
+      h("hr"),
+      h(q.defineComponent(), { number: qr.number }),
       h("hr"),
       globalReact.revealToken
         ? [
