@@ -1,7 +1,5 @@
 // class component
 
-import { isNoUnitNumericStyleProp } from "@vue/shared";
-import { isVNode } from "vue";
 import {
   ref,
   onMounted,
@@ -12,6 +10,7 @@ import {
 } from "vue/dist/vue.esm-browser.prod";
 
 import { px } from "./misc";
+import { Duration } from "../shared/time";
 
 //////////////////////////////////////////////////////
 
@@ -41,7 +40,7 @@ export const DEFAULT_SEGMENT_WIDTH = 20;
 export const DEFAULT_SEGMENT_LENGTH = 100;
 export const DEFAULT_TRANSITION_DELAY = 45;
 export const DEFAULT_SEGMENT_ACTIVE_COLOR = "#f00";
-export const DEFAULT_SEGMENT_DISABLED_COLOR = "#ddd";
+export const DEFAULT_SEGMENT_DISABLED_COLOR = "#bbb";
 export const DEFAULT_BACKGROUND_COLOR = "#aaa";
 export const DEFAULT_SEGMENT_RADIUS = 10;
 export const DEFAULT_PADDING = 10;
@@ -144,23 +143,27 @@ export class QuartzDigit {
   }
 
   setNumber(number: number) {
-    let i = 1;
-    for (let seg of QUARTZ_SEGMENTS) {
-      const ref = this.refs[seg];
-      const el = ref._rawValue;
-      const st = el.style;
-      const hasSeg = QUARTZ_DIGIT_SEGMENTS[seg].includes(number);
-      setTimeout(() => {
-        st.backgroundColor = hasSeg
-          ? this.props.segmentActiveColor
-          : this.props.segmentDisabledColor;
-        st.boxShadow = hasSeg
-          ? `0 0 ${px(this.props.segmentWidth)} ${
-              this.props.segmentActiveColor
-            }`
-          : "none";
-      }, this.props.transDelay * i++);
-    }
+    try {
+      let i = 1;
+      for (let seg of QUARTZ_SEGMENTS) {
+        const ref = this.refs[seg];
+        const el = ref._rawValue;
+        const st = el.style;
+        const hasSeg = QUARTZ_DIGIT_SEGMENTS[seg].includes(number);
+        setTimeout(() => {
+          try {
+            st.backgroundColor = hasSeg
+              ? this.props.segmentActiveColor
+              : this.props.segmentDisabledColor;
+            st.boxShadow = hasSeg
+              ? `0 0 ${px(this.props.segmentWidth)} ${
+                  this.props.segmentActiveColor
+                }`
+              : "none";
+          } catch (err) {}
+        }, this.props.transDelay * i++);
+      }
+    } catch (err) {}
   }
 
   defineComponent() {
@@ -235,25 +238,6 @@ export class QuartzDigit {
   }
 }
 
-export class Quartz {
-  react = reactive({});
-
-  constructor() {}
-
-  renderFunction() {
-    return h("div", { class: "" }, [h(new QuartzDigit().defineComponent())]);
-  }
-
-  defineComponent() {
-    const self = this;
-    return defineComponent({
-      setup() {
-        return self.renderFunction.bind(self);
-      },
-    });
-  }
-}
-
 export type QuartzDigitGroupProps = {
   digitProps: QuartzDigitProps;
   numDigits: number;
@@ -264,6 +248,7 @@ export type QuartzDigitGroupProps = {
 export class QuartzDigitGroup {
   props: QuartzDigitGroupProps;
   quartzDigits: QuartzDigit[] = [];
+  leadingZeros: boolean = false;
 
   constructor() {}
 
@@ -271,8 +256,6 @@ export class QuartzDigitGroup {
     const qd = this.quartzDigits.map((digit, i) =>
       h(digit.defineComponent(), {})
     );
-
-    console.log(qd);
 
     return qd;
   }
@@ -286,23 +269,25 @@ export class QuartzDigitGroup {
   }
 
   setNumber(number: number) {
-    let num = number;
-    let done = false;
-    for (let i = 0; i < this.props.numDigits; i++) {
-      if (number < 0) {
-        this.quartzDigits[this.props.numDigits - i - 1].setNumber(-1);
-      } else {
-        const curr = num % 10;
-        this.quartzDigits[this.props.numDigits - i - 1].setNumber(
-          done ? -1 : curr
-        );
-        num -= curr;
-        num /= 10;
-        if (num === 0 && !this.props.leadingZeros) {
-          done = true;
+    try {
+      let num = number;
+      let done = false;
+      for (let i = 0; i < this.props.numDigits; i++) {
+        if (number < 0) {
+          this.quartzDigits[this.props.numDigits - i - 1].setNumber(-1);
+        } else {
+          const curr = num % 10;
+          this.quartzDigits[this.props.numDigits - i - 1].setNumber(
+            done ? -1 : curr
+          );
+          num -= curr;
+          num /= 10;
+          if (num === 0 && !this.leadingZeros) {
+            done = true;
+          }
         }
       }
-    }
+    } catch (err) {}
   }
 
   defineComponent() {
@@ -328,6 +313,7 @@ export class QuartzDigitGroup {
       },
       setup(props: any) {
         self.props = props;
+
         self.quartzDigits = Array(self.props.numDigits)
           .fill(0)
           .map(() => new QuartzDigit());
@@ -353,11 +339,7 @@ export type QuartzDurationProps = {
 export class QuartzDuration {
   props: QuartzDurationProps;
 
-  groups: QuartzDigitGroup[] = [
-    new QuartzDigitGroup(),
-    new QuartzDigitGroup(),
-    new QuartzDigitGroup(),
-  ];
+  groups: QuartzDigitGroup[] = [];
 
   seps: QuartzDigit[] = [0, 1].map((i) => new QuartzDigit());
 
@@ -386,7 +368,19 @@ export class QuartzDuration {
     );
   }
 
-  setDurationMs(durationMs: number) {}
+  setDurationMs(durationMs: number) {
+    try {
+      const dur = new Duration(durationMs);
+
+      this.groups[0].setNumber(dur.hours || -1);
+      this.groups[1].leadingZeros = dur.hours > 0;
+      this.seps[0].props.number = dur.hours > 0 ? 1 : -1;
+      this.groups[1].setNumber(dur.minutes || -1);
+      this.groups[2].leadingZeros = dur.minutes > 0;
+      this.seps[1].props.number = dur.minutes > 0 ? 1 : -1;
+      this.groups[2].setNumber(dur.seconds);
+    } catch (err) {}
+  }
 
   defineComponent() {
     const self = this;
@@ -403,6 +397,14 @@ export class QuartzDuration {
         },
       },
       setup(props: any) {
+        self.props = props;
+
+        self.groups = [
+          new QuartzDigitGroup(),
+          new QuartzDigitGroup(),
+          new QuartzDigitGroup(),
+        ];
+
         onMounted(() => {
           watchEffect(() => {
             const durationMs = self.props.durationMs;

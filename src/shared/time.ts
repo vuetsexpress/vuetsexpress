@@ -6,6 +6,32 @@ export const MONTH = 30 * DAY;
 export const WEEK = 7 * DAY;
 export const YEAR = 365 * DAY;
 
+export class Duration {
+  days: number;
+  hours: number;
+  minutes: number;
+  seconds: number;
+  milliSeconds: number;
+
+  constructor(ms: number) {
+    this.setMs(ms);
+  }
+
+  setMs(msOpt?: number) {
+    let ms = msOpt === undefined ? 0 : msOpt;
+
+    this.milliSeconds = ms % SECOND;
+    ms -= this.milliSeconds;
+    this.seconds = (ms / SECOND) % 60;
+    ms -= this.seconds * SECOND;
+    this.minutes = (ms / MINUTE) % 60;
+    ms -= this.minutes * MINUTE;
+    this.hours = (ms / HOUR) % 24;
+    ms -= this.hours * HOUR;
+    this.days = ms / DAY;
+  }
+}
+
 export function formatDurationMs(dur: number) {
   if (dur < SECOND) return `${dur} millisecond(s)`;
   if (dur < MINUTE) return `${Math.floor((dur / SECOND) * 10) / 10} second(s)`;

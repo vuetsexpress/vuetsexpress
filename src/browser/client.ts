@@ -167,10 +167,10 @@ const analysisboard = h(
 
 const qd = new QuartzDuration();
 const qdc = qd.defineComponent();
-for (let i = 0; i < 100000; i += 1000) {
+for (let i = 0; i < 10000; i++) {
   setTimeout(() => {
-    qd.setDurationMs(i);
-  }, i * 3000);
+    qd.setDurationMs(i * 5000);
+  }, i * 1000);
 }
 
 const profile = () =>
