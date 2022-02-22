@@ -1,5 +1,11 @@
+@use "misc";
+
 @mixin generaldigit {
   border: solid 1px transparent;
+}
+
+@mixin separator {
+  @include misc.centerflex;
 }
 
 .quartzdigit {
@@ -45,16 +51,37 @@
 
       @include generaldigit;
     }
+    .middletop {
+      grid-row: 2;
+      grid-column: 2;
+
+      @include generaldigit;
+      @include separator;
+    }
     .middle {
       grid-row: 3;
       grid-column: 2;
 
       @include generaldigit;
     }
+    .middlebottom {
+      grid-row: 4;
+      grid-column: 2;
+
+      @include generaldigit;
+      @include separator;
+    }
   }
 }
 
 .quartzdigitgroup {
+  display: inline-block;
+  .cont {
+    display: flex;
+  }
+}
+
+.quartzduration {
   display: inline-block;
   .cont {
     display: flex;

@@ -29,7 +29,7 @@ import { randomQuote } from "../shared/quotes";
 import { CreateSeek, ShowSeek, showUser, ShowMatch } from "./createseek";
 import { Seek, Match } from "../shared/models";
 import { headSort } from "../shared/utils";
-import { QuartzDigitGroup } from "./quartz";
+import { QuartzDuration } from "./quartz";
 
 //////////////////////////////////////////////////////////////////////
 
@@ -165,11 +165,11 @@ const analysisboard = h(
   analysisBoardComp
 );
 
-const qg = new QuartzDigitGroup();
-const qgc = qg.defineComponent();
-for (let i = 0; i < 100; i++) {
+const qd = new QuartzDuration();
+const qdc = qd.defineComponent();
+for (let i = 0; i < 100000; i += 1000) {
   setTimeout(() => {
-    qg.setNumber(i);
+    qd.setDurationMs(i);
   }, i * 3000);
 }
 
@@ -215,7 +215,17 @@ const profile = () =>
         globalReact.revealToken ? "Hide Token" : "Reveal Token"
       ),
       h("hr"),
-      h(qgc, { number: -1 }),
+      h(
+        "div",
+        {
+          style: {
+            height: "120px",
+            backgroundColor: "#f00",
+            transform: "scale(0.3)",
+          },
+        },
+        centeredFlex(h(qdc, { durationMs: -1 }))
+      ),
       h("hr"),
       globalReact.revealToken
         ? [

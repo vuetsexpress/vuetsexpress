@@ -1,5 +1,6 @@
 // class component
 
+import { isNoUnitNumericStyleProp } from "@vue/shared";
 import { isVNode } from "vue";
 import {
   ref,
@@ -57,6 +58,8 @@ export type QuartzDigitProps = {
   segmentRadius: number;
   padding: number;
   transition: number;
+  separator: boolean;
+  separatorWidthScale: number;
 };
 
 export class QuartzDigit {
@@ -66,7 +69,11 @@ export class QuartzDigit {
   constructor() {}
 
   get totalWidth() {
-    return this.props.segmentWidth * 2 + this.props.segmentLength * 1;
+    return (
+      this.props.segmentWidth * 2 +
+      this.props.segmentLength *
+        (this.props.separator ? this.props.separatorWidthScale : 1)
+    );
   }
 
   get totalHeight() {
@@ -90,20 +97,48 @@ export class QuartzDigit {
           style: {
             "max-width": px(this.totalWidth),
             "max-height": px(this.totalHeight),
-            "grid-template-columns": `${this.props.segmentWidth}px ${this.props.segmentLength}px ${this.props.segmentWidth}px`,
+            "grid-template-columns": `${this.props.segmentWidth}px ${
+              this.props.separator
+                ? this.props.segmentLength * this.props.separatorWidthScale
+                : this.props.segmentLength
+            }px ${this.props.segmentWidth}px`,
             "grid-template-rows": `${this.props.segmentWidth}px ${this.props.segmentLength}px ${this.props.segmentWidth}px ${this.props.segmentLength}px ${this.props.segmentWidth}px`,
           },
         },
-        QUARTZ_SEGMENTS.map((seg: string) => {
-          return h("div", {
-            ref: this.refs[seg],
-            class: [seg],
-            style: {
-              "border-radius": px(this.props.segmentRadius),
-              transition: `all ${this.props.transition}s`,
-            },
-          });
-        })
+        this.props.separator
+          ? ["top", "bottom"].map((name) =>
+              h(
+                "div",
+                { class: "middle" + name },
+                h("div", {
+                  style: {
+                    width: px(this.props.segmentWidth * 2),
+                    height: px(this.props.segmentWidth),
+                    borderRadius: px(this.props.segmentWidth / 2),
+                    backgroundColor:
+                      this.props.number < 0
+                        ? this.props.segmentDisabledColor
+                        : this.props.segmentActiveColor,
+                    boxShadow:
+                      this.props.number < 0
+                        ? "none"
+                        : `0 0 ${px(this.props.segmentWidth)} ${
+                            this.props.segmentActiveColor
+                          }`,
+                  },
+                })
+              )
+            )
+          : QUARTZ_SEGMENTS.map((seg: string) => {
+              return h("div", {
+                ref: this.refs[seg],
+                class: [seg],
+                style: {
+                  "border-radius": px(this.props.segmentRadius),
+                  transition: `all ${this.props.transition}s`,
+                },
+              });
+            })
       )
     );
   }
@@ -172,6 +207,14 @@ export class QuartzDigit {
         transition: {
           type: Number,
           default: DEFAULT_TRANSITION,
+        },
+        separator: {
+          type: Boolean,
+          default: false,
+        },
+        separatorWidthScale: {
+          type: Number,
+          default: 1 / 5,
         },
       },
       setup(props: any) {
@@ -293,6 +336,77 @@ export class QuartzDigitGroup {
           watchEffect(() => {
             const number = self.props.number;
             self.setNumber(number);
+          });
+        });
+
+        return self.renderFunction.bind(self);
+      },
+    });
+  }
+}
+
+export type QuartzDurationProps = {
+  digitProps: QuartzDigitProps;
+  durationMs: number;
+};
+
+export class QuartzDuration {
+  props: QuartzDurationProps;
+
+  groups: QuartzDigitGroup[] = [
+    new QuartzDigitGroup(),
+    new QuartzDigitGroup(),
+    new QuartzDigitGroup(),
+  ];
+
+  seps: QuartzDigit[] = [0, 1].map((i) => new QuartzDigit());
+
+  constructor() {}
+
+  renderFunction() {
+    return h(
+      "div",
+      { class: "quartzduration" },
+      h(
+        "div",
+        {
+          class: "cont",
+          style: {
+            border: `solid 10px #777`,
+          },
+        },
+        [
+          h(this.groups[0].defineComponent()),
+          h(this.seps[0].defineComponent(), { separator: true }),
+          h(this.groups[1].defineComponent()),
+          h(this.seps[1].defineComponent(), { separator: true }),
+          h(this.groups[2].defineComponent()),
+        ]
+      )
+    );
+  }
+
+  setDurationMs(durationMs: number) {}
+
+  defineComponent() {
+    const self = this;
+
+    return defineComponent({
+      props: {
+        digitProps: {
+          type: Object,
+          default: () => {},
+        },
+        durationMs: {
+          type: Number,
+          default: 0,
+        },
+      },
+      setup(props: any) {
+        onMounted(() => {
+          watchEffect(() => {
+            const durationMs = self.props.durationMs;
+            self.setDurationMs(durationMs);
           });
         });
 
