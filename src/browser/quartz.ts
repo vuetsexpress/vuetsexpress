@@ -1,5 +1,6 @@
 // class component
 
+import { isVNode } from "vue";
 import {
   ref,
   onMounted,
@@ -107,7 +108,7 @@ export class QuartzDigit {
     );
   }
 
-  build(number: number) {
+  setNumber(number: number) {
     let i = 1;
     for (let seg of QUARTZ_SEGMENTS) {
       const ref = this.refs[seg];
@@ -181,7 +182,7 @@ export class QuartzDigit {
         onMounted(() => {
           watchEffect(() => {
             const number = props.number;
-            self.build(number);
+            self.setNumber(number);
           });
         });
 
@@ -204,6 +205,97 @@ export class Quartz {
     const self = this;
     return defineComponent({
       setup() {
+        return self.renderFunction.bind(self);
+      },
+    });
+  }
+}
+
+export type QuartzDigitGroupProps = {
+  digitProps: QuartzDigitProps;
+  numDigits: number;
+  leadingZeros: boolean;
+  number: number;
+};
+
+export class QuartzDigitGroup {
+  props: QuartzDigitGroupProps;
+  quartzDigits: QuartzDigit[] = [];
+
+  constructor() {}
+
+  genDigits() {
+    const qd = this.quartzDigits.map((digit, i) =>
+      h(digit.defineComponent(), {})
+    );
+
+    console.log(qd);
+
+    return qd;
+  }
+
+  renderFunction() {
+    return h(
+      "div",
+      { class: "quartzdigitgroup" },
+      h("div", { class: "cont" }, this.genDigits())
+    );
+  }
+
+  setNumber(number: number) {
+    let num = number;
+    let done = false;
+    for (let i = 0; i < this.props.numDigits; i++) {
+      if (number < 0) {
+        this.quartzDigits[this.props.numDigits - i - 1].setNumber(-1);
+      } else {
+        const curr = num % 10;
+        this.quartzDigits[this.props.numDigits - i - 1].setNumber(
+          done ? -1 : curr
+        );
+        num -= curr;
+        num /= 10;
+        if (num === 0 && !this.props.leadingZeros) {
+          done = true;
+        }
+      }
+    }
+  }
+
+  defineComponent() {
+    const self = this;
+    return defineComponent({
+      props: {
+        digitProps: {
+          type: Object,
+          default: () => ({}),
+        },
+        numDigits: {
+          type: Number,
+          default: 2,
+        },
+        leadingZeros: {
+          type: Boolean,
+          default: false,
+        },
+        number: {
+          type: Number,
+          default: 0,
+        },
+      },
+      setup(props: any) {
+        self.props = props;
+        self.quartzDigits = Array(self.props.numDigits)
+          .fill(0)
+          .map(() => new QuartzDigit());
+
+        onMounted(() => {
+          watchEffect(() => {
+            const number = self.props.number;
+            self.setNumber(number);
+          });
+        });
+
         return self.renderFunction.bind(self);
       },
     });
