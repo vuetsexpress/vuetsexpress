@@ -596,8 +596,8 @@
         }
       },
       uploadconfig() {
-        post("setconfig", {
-          name: this.params.appName,
+        post("setappconfig", {
+          appName: this.params.appName,
           config: this.params.config,
         }).then((result) => {
           if (result.error) {

@@ -165,13 +165,13 @@ const analysisboard = h(
   analysisBoardComp
 );
 
-const qd = new QuartzDuration();
+/*const qd = new QuartzDuration();
 const qdc = qd.defineComponent();
 for (let i = 0; i < 10000; i++) {
   setTimeout(() => {
     qd.setDurationMs(i * 5000);
   }, i * 1000);
-}
+}*/
 
 const profile = () =>
   h(
@@ -215,7 +215,7 @@ const profile = () =>
         globalReact.revealToken ? "Hide Token" : "Reveal Token"
       ),
       h("hr"),
-      h(
+      /*h(
         "div",
         {
           style: {
@@ -226,7 +226,7 @@ const profile = () =>
         },
         centeredFlex(h(qdc, { durationMs: -1 }))
       ),
-      h("hr"),
+      h("hr"),*/
       globalReact.revealToken
         ? [
             h(

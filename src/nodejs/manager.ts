@@ -69,6 +69,14 @@ export class Manager {
       }
     });
 
+    this.api.postAdmin("/setappconfig", (req: any, res: any) => {
+      const { appName, config } = req.body;
+
+      this.appMan.setConfig(appName, config).then((result: any) => {
+        res.json(result);
+      });
+    });
+
     this.api.postAdmin("/appman", (req: any, res: any) => {
       this.appMan.init().then((result) => {
         res.json(this.appMan.serialize());
@@ -189,12 +197,6 @@ export class Manager {
 
     this.api.postAdmin("/getconfig", (req: any, res: any) => {
       this.appMan.getConfig(req.body.name).then((result) => {
-        res.json(result);
-      });
-    });
-
-    this.api.postAdmin("/setconfig", (req: any, res: any) => {
-      this.appMan.setConfig(req.body.name, req.body.config).then((result) => {
         res.json(result);
       });
     });
